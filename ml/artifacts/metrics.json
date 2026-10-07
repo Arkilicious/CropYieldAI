@@ -1,0 +1,14 @@
+{
+  "r2": 0.9757,
+  "mae": 0.5746,
+  "rmse": 0.8524,
+  "samples": 1800,
+  "algorithm": "Random Forest Regressor",
+  "features": [
+    "crop_type",
+    "soil_type",
+    "rainfall",
+    "temperature",
+    "humidity"
+  ]
+}

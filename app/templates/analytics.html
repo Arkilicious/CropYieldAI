@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Analytics | CropYield AI{% endblock %}
+{% block crumb %}Analytics{% endblock %}
+{% block content %}
+<div class="page-head analytics-head">
+  <div>
+    <div class="eyebrow">FIELD ANALYTICS</div>
+    <h1>Read the patterns behind your predictions.</h1>
+    <p>Compare yield forecasts with environmental conditions and crop selection.</p>
+  </div>
+  <div class="analytics-scope"><span class="status-dot"></span>{{ scope_label }}</div>
+</div>
+
+<div class="analytics-kpis">
+  <div class="panel analytics-kpi"><span>Total predictions</span><strong id="analyticsTotal">0</strong><small>records in this view</small></div>
+  <div class="panel analytics-kpi"><span>Average yield</span><strong id="analyticsAvgYield">0.00 <i>t/ha</i></strong><small>predicted output</small></div>
+  <div class="panel analytics-kpi"><span>Average rainfall</span><strong id="analyticsAvgRain">0 <i>mm</i></strong><small>environmental signal</small></div>
+  <div class="panel analytics-kpi"><span>High-risk cases</span><strong id="analyticsHighRisk">0</strong><small>requires attention</small></div>
+</div>
+
+<div id="analyticsEmpty" class="panel analytics-empty" hidden>
+  <div class="empty-icon">◌</div>
+  <h2>No prediction data yet</h2>
+  <p>Run a prediction in Prediction Studio first. Once a result is saved, the yield, crop and environmental charts will populate automatically.</p>
+  <a class="btn primary" href="{{ url_for('main.prediction') }}">Open Prediction Studio</a>
+</div>
+
+<div id="analyticsCharts" class="analytics-grid">
+  <section class="panel wide">
+    <div class="panel-head"><div><h2>Yield trend</h2><span>Predicted tonnes per hectare over time</span></div></div>
+    <div class="chart-wrap"><canvas id="analyticsYield"></canvas></div>
+  </section>
+  <section class="panel">
+    <div class="panel-head"><div><h2>Crop distribution</h2><span>Predictions by crop</span></div></div>
+    <div class="chart-wrap chart-doughnut"><canvas id="analyticsCrop"></canvas></div>
+  </section>
+  <section class="panel wide">
+    <div class="panel-head"><div><h2>Rainfall and temperature</h2><span>Environmental signals associated with predictions</span></div></div>
+    <div class="chart-wrap"><canvas id="environmentChart"></canvas></div>
+  </section>
+</div>
+{% endblock %}
+{% block scripts %}<script>window.CY_ANALYTICS=true;</script>{% endblock %}

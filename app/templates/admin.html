@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Admin Command Center | CropYield AI{% endblock %}
+{% block crumb %}Admin Command Center{% endblock %}
+{% block content %}
+<div class="page-head admin-head"><div><div class="eyebrow">PLATFORM ADMINISTRATION</div><h1>Command center.</h1><p>Operate the CropYield AI platform: users, predictions, model lifecycle and system health.</p></div><form method="post" action="{{url_for('main.retrain')}}"><input type="hidden" name="csrf_token" value="{{csrf_token()}}"><button class="lime-btn">↻ Retrain model</button></form></div>
+
+<section class="kpis admin-kpis">
+<div class="kpi"><span>REGISTERED USERS</span><strong>{{total_users}}</strong><small>{{active_users}} active accounts</small></div>
+<div class="kpi"><span>TOTAL PREDICTIONS</span><strong>{{total_predictions}}</strong><small>All stored inference records</small></div>
+<div class="kpi"><span>AVERAGE YIELD</span><strong>{{avg_yield}} <i>t/ha</i></strong><small>Across all users</small></div>
+<div class="kpi accent"><span>HIGH-RISK CASES</span><strong>{{high_risk}}</strong><small>Require closer field attention</small></div>
+</section>
+
+<div class="admin-shell">
+<section class="admin-command-nav panel">
+<div class="admin-brand"><div class="admin-shield">⌘</div><div><b>ADMIN CONTROL</b><span>Restricted operations</span></div></div>
+<a class="admin-tab active" href="#overview">◉ Overview <span>01</span></a>
+<a class="admin-tab" href="#users">♙ Users <span>{{total_users}}</span></a>
+<a class="admin-tab" href="#predictions">◒ Predictions <span>{{total_predictions}}</span></a>
+<a class="admin-tab" href="#model">◇ AI Model <span>Live</span></a>
+<a class="admin-tab" href="#health">▣ System health <span>OK</span></a>
+</section>
+
+<div class="admin-content">
+<section id="overview" class="admin-section">
+<div class="section-title"><div><span>01 / OVERVIEW</span><h2>Platform intelligence</h2></div><span class="admin-live"><i></i> LIVE CONTROL PLANE</span></div>
+<div class="admin-overview-grid">
+<div class="panel admin-chart-panel"><div class="panel-head"><div><h2>Operational snapshot</h2><span>Prediction volume and model performance</span></div></div>
+<div class="admin-stat-list"><div><span>Model algorithm</span><b>{{metrics.algorithm}}</b></div><div><span>R² evaluation</span><b>{{(metrics.r2*100)|round(1)}}%</b></div><div><span>MAE</span><b>{{metrics.mae}}</b></div><div><span>RMSE</span><b>{{metrics.rmse}}</b></div><div><span>Training samples</span><b>{{metrics.samples}}</b></div></div></div>
+<div class="panel system-panel"><div class="panel-head"><div><h2>Service status</h2><span>Live readiness checks</span></div></div>
+<div class="service-row"><span>Web application</span><b class="ok">ONLINE</b></div><div class="service-row"><span>SQLite database</span><b class="ok">CONNECTED</b></div><div class="service-row"><span>ML artifact</span><b class="{{'ok' if health.model else 'bad'}}">{{'READY' if health.model else 'MISSING'}}</b></div><div class="service-row"><span>Authentication</span><b class="ok">ENABLED</b></div><div class="service-row"><span>CSRF protection</span><b class="ok">ENABLED</b></div>
+</div></div>
+</section>
+
+<section id="users" class="admin-section">
+<div class="section-title"><div><span>02 / USER MANAGEMENT</span><h2>Accounts & access</h2></div></div>
+<form class="admin-filters panel" method="get" action="{{url_for('main.admin')}}"><input name="q" value="{{q}}" placeholder="Search name or email…"><select name="status"><option value="all" {% if status=='all' %}selected{% endif %}>All status</option><option value="active" {% if status=='active' %}selected{% endif %}>Active</option><option value="suspended" {% if status=='suspended' %}selected{% endif %}>Suspended</option></select><select name="role"><option value="all">All roles</option><option value="admin" {% if role=='admin' %}selected{% endif %}>Admin</option><option value="user" {% if role=='user' %}selected{% endif %}>Farmer/User</option></select><button class="glass-btn">Filter</button><a class="glass-btn" href="{{url_for('main.admin')}}">Reset</a></form>
+<div class="panel table-panel admin-table"><div class="table-wrap"><table><thead><tr><th>User</th><th>Role</th><th>Status</th><th>Joined</th><th>Access</th></tr></thead><tbody>{% for u in users %}<tr><td><b>{{u.name}}</b><small>{{u.email}}</small></td><td><span class="role-badge">{{u.role|title}}</span></td><td><span class="risk {{'low' if u.active else 'high'}}">{{'Active' if u.active else 'Suspended'}}</span></td><td>{{u.created_at.strftime('%d %b %Y')}}</td><td>{% if u.id!=current_user.id %}<form class="inline" method="post" action="{{url_for('main.toggle_user',uid=u.id)}}"><input type="hidden" name="csrf_token" value="{{csrf_token()}}"><button>{{'Suspend' if u.active else 'Activate'}}</button></form><form class="inline danger-action" method="post" action="{{url_for('main.delete_user',uid=u.id)}}" onsubmit="return confirm('Delete this user and their prediction history?')"><input type="hidden" name="csrf_token" value="{{csrf_token()}}"><button>Delete</button></form>{% else %}<span class="you-badge">YOU</span>{% endif %}</td></tr>{% else %}<tr><td colspan="5" class="empty">No matching accounts.</td></tr>{% endfor %}</tbody></table></div></div>
+</section>
+
+<section id="predictions" class="admin-section">
+<div class="section-title"><div><span>03 / PREDICTION OPERATIONS</span><h2>Prediction monitoring</h2></div></div>
+<div class="panel table-panel admin-table"><div class="table-wrap"><table><thead><tr><th>ID</th><th>Farmer</th><th>Crop</th><th>Environment</th><th>Yield</th><th>Risk</th><th>Time</th><th>Actions</th></tr></thead><tbody>{% for p in predictions %}<tr><td>#{{p.id}}</td><td><b>{{p.user.name}}</b><small>{{p.user.email}}</small></td><td>{{p.crop_type}}<small>{{p.soil_type}}</small></td><td>{{p.rainfall|round(0)}}mm · {{p.temperature|round(1)}}°C · {{p.humidity|round(0)}}%</td><td><strong>{{p.yield_tph|round(2)}} t/ha</strong></td><td><span class="risk {{p.risk_label|lower}}">{{p.risk_label}}</span></td><td>{{p.created_at.strftime('%d %b %H:%M')}}</td><td><a class="table-action" href="{{url_for('main.report',pid=p.id)}}">PDF</a><form class="inline danger-action" method="post" action="{{url_for('main.delete_prediction',pid=p.id)}}" onsubmit="return confirm('Delete prediction #{{p.id}}?')"><input type="hidden" name="csrf_token" value="{{csrf_token()}}"><button>Delete</button></form></td></tr>{% else %}<tr><td colspan="8" class="empty">No prediction records yet.</td></tr>{% endfor %}</tbody></table></div></div>
+</section>
+
+<section id="model" class="admin-section">
+<div class="section-title"><div><span>04 / AI MODEL LIFECYCLE</span><h2>Model operations</h2></div></div>
+<div class="admin-model-grid"><div class="panel model-command"><span class="model-badge">DEPLOYED</span><h2>{{metrics.algorithm}}</h2><p>Current inference artifact is loaded by the prediction engine. Retraining regenerates the dataset, evaluates the model and writes a new Joblib artifact.</p><div class="metric-row"><div><b>{{(metrics.r2*100)|round(1)}}%</b><span>R²</span></div><div><b>{{metrics.mae}}</b><span>MAE</span></div><div><b>{{metrics.rmse}}</b><span>RMSE</span></div><div><b>{{metrics.samples}}</b><span>Rows</span></div></div></div><div class="panel"><h2>Retraining control</h2><p class="pane-copy">Use only when the approved dataset is available. The bundled demo workflow uses controlled synthetic data.</p><form method="post" action="{{url_for('main.retrain')}}"><input type="hidden" name="csrf_token" value="{{csrf_token()}}"><button class="lime-btn full">↻ Run model retraining</button></form></div></div>
+</section>
+
+<section id="health" class="admin-section">
+<div class="section-title"><div><span>05 / SYSTEM HEALTH</span><h2>Operational readiness</h2></div></div>
+<div class="health-grid"><div class="panel health-card"><div class="health-icon">✓</div><h3>Platform online</h3><p>Authentication, database and inference routes are available.</p></div><div class="panel health-card"><div class="health-icon">ML</div><h3>Model {{'ready' if health.model else 'not ready'}}</h3><p>Joblib artifact status: <strong>{{'available' if health.model else 'missing'}}</strong>.</p></div><div class="panel health-card"><div class="health-icon">DB</div><h3>Database connected</h3><p>{{total_predictions}} prediction records and {{total_users}} user accounts.</p></div></div>
+</section>
+</div></div>
+{% endblock %}

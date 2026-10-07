@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Prediction Studio | CropYield AI{% endblock %}
+{% block crumb %}Prediction Studio{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><div class="eyebrow">AI PREDICTION STUDIO</div><h1>Forecast your crop yield.</h1><p>Complete the field profile, validate environmental conditions, then run the deployed Random Forest model.</p></div>
+  <div class="studio-status"><span class="status-dot"></span> Model ready</div>
+</div>
+<div class="studio-grid">
+<section class="panel form-panel wizard-panel">
+  <div class="step-row" id="wizardSteps">
+    <button type="button" class="step active" data-step="1"><span>01</span><b>Field profile</b><small>Crop & soil</small></button>
+    <button type="button" class="step" data-step="2"><span>02</span><b>Environment</b><small>Climate signals</small></button>
+    <button type="button" class="step {% if not result %}locked{% endif %}" data-step="3" {% if not result %}disabled{% endif %}><span>03</span><b>AI result</b><small>{% if result %}Prediction output{% else %}Run model first{% endif %}</small></button>
+  </div>
+  <form method="post" id="predictForm">
+    <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+    <div class="wizard-pane active" data-pane="1">
+      <div class="pane-kicker">STEP 01 · FIELD PROFILE</div>
+      <h2>Describe the field</h2><p class="pane-copy">Select the crop and dominant soil class used by the trained model.</p>
+      <div class="form-grid">
+        <label>Crop type<select name="crop_type" required>{% for c in crops %}<option {% if result and result.crop_type==c %}selected{% endif %}>{{c}}</option>{% endfor %}</select></label>
+        <label>Soil type<select name="soil_type" required>{% for s in soils %}<option {% if result and result.soil_type==s %}selected{% endif %}>{{s}}</option>{% endfor %}</select></label>
+      </div>
+      <div class="wizard-actions"><span>Field profile complete when both values are selected.</span><button type="button" class="lime-btn next-step" data-next="2">Continue to environment →</button></div>
+    </div>
+    <div class="wizard-pane" data-pane="2">
+      <div class="pane-kicker">STEP 02 · ENVIRONMENT</div>
+      <h2>Enter climate signals</h2><p class="pane-copy">Use representative values for the field. The system validates the permitted model ranges before inference.</p>
+      <div class="form-grid">
+        <label>Annual rainfall <span>mm</span><input name="rainfall" type="number" min="100" max="3000" step="1" value="{{request.form.get('rainfall','900')}}" required></label>
+        <label>Average temperature <span>°C</span><input name="temperature" type="number" min="5" max="50" step="0.1" value="{{request.form.get('temperature','27')}}" required></label>
+        <label>Relative humidity <span>%</span><input name="humidity" type="number" min="1" max="100" step="1" value="{{request.form.get('humidity','65')}}" required></label>
+      </div>
+      <div class="helper"><b>Validation envelope</b><span>Rainfall 100–3000 mm · Temperature 5–50 °C · Humidity 1–100%</span></div>
+      <div class="wizard-actions"><button type="button" class="glass-btn prev-step" data-prev="1">← Field profile</button><button class="lime-btn big-submit" type="submit">Run AI prediction <span>↗</span></button></div>
+    </div>
+    <div class="wizard-pane result-gate" data-pane="3">
+      <div class="pane-kicker">STEP 03 · AI RESULT</div>
+      {% if result %}<h2>Prediction generated successfully.</h2><p class="pane-copy">The model output is saved to your account and available in history and reports.</p><div class="result-gate-card"><strong>{{'%.2f'|format(result.yield_tph)}} t/ha</strong><span>{{result.risk_label}} risk · {{result.condition_score}}/100 condition</span></div><a class="lime-btn" href="#resultPanel">Review full result ↓</a>
+      {% else %}<h2>Run the model to unlock this step.</h2><p class="pane-copy">Step 03 becomes available after Step 02 passes validation and the prediction is saved.</p><button type="button" class="glass-btn" data-step-jump="2">Return to environment</button>{% endif %}
+    </div>
+  </form>
+</section>
+{% if result %}
+<section class="panel result-panel" id="resultPanel">
+  <div class="result-top"><span class="live-pill"><i></i> MODEL COMPLETE</span><small>Prediction #{{result.id}}</small></div>
+  <div class="yield-number">{{'%.2f'|format(result.yield_tph)}} <small>t/ha</small></div>
+  <p class="result-sub">Expected range {{'%.2f'|format(result.range_low)}}–{{'%.2f'|format(result.range_high)}} t/ha</p>
+  <div class="result-grid"><div><span>Crop</span><b>{{result.crop_type}}</b></div><div><span>Soil</span><b>{{result.soil_type}}</b></div><div><span>Condition score</span><b>{{result.condition_score}}/100</b></div><div><span>Risk</span><b class="{{result.risk_label|lower}}">{{result.risk_label}} · {{result.risk_score}}/100</b></div></div>
+  <div class="recommend"><h3>Decision support</h3>{% for r in result.recommendations %}<div>✓ {{r}}</div>{% endfor %}</div>
+  <div class="result-actions"><a class="glass-btn" href="{{url_for('main.report',pid=result.id)}}">Download PDF</a><a class="glass-btn" href="{{url_for('main.export_csv')}}">Export CSV</a><a class="lime-btn" href="{{url_for('main.prediction')}}">New prediction</a></div>
+</section>
+{% else %}
+<section class="panel result-empty"><div class="orb">✦</div><h2>AI result will appear here</h2><p>Complete the first two steps. The deployed Random Forest model will then generate an interpretable yield forecast, expected range, risk score and recommendations.</p><div class="mini-tags"><span>Validated inputs</span><span>ML inference</span><span>Decision support</span></div></section>
+{% endif %}
+</div>
+{% endblock %}
+{% block scripts %}<script>
+(function(){
+ const steps=[...document.querySelectorAll('#wizardSteps .step')], panes=[...document.querySelectorAll('.wizard-pane')];
+ function show(n){
+   steps.forEach(s=>s.classList.toggle('active',+s.dataset.step===n));
+   panes.forEach(p=>p.classList.toggle('active',+p.dataset.pane===n));
+   window.scrollTo({top:document.querySelector('.wizard-panel').offsetTop-90,behavior:'smooth'});
+ }
+ steps.forEach(s=>s.addEventListener('click',()=>{if(!s.disabled) show(+s.dataset.step)}));
+ document.querySelectorAll('.next-step').forEach(b=>b.addEventListener('click',()=>show(+b.dataset.next)));
+ document.querySelectorAll('.prev-step').forEach(b=>b.addEventListener('click',()=>show(+b.dataset.prev)));
+ document.querySelectorAll('[data-step-jump]').forEach(b=>b.addEventListener('click',()=>show(+b.dataset.stepJump)));
+ const form=document.getElementById('predictForm');
+ form.addEventListener('submit',e=>{
+   const vals=[...form.querySelectorAll('[required]')];
+   if(!vals.every(x=>x.checkValidity())){e.preventDefault(); form.reportValidity(); return;}
+   const btn=form.querySelector('.big-submit'); btn.disabled=true; btn.innerHTML='Running model…';
+ });
+ {% if result %}show(3);{% else %}show(1);{% endif %}
+})();
+</script>{% endblock %}
