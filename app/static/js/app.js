@@ -1,14 +1,249 @@
-let yieldChart,cropChart;
-const common={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#718078',font:{size:9}}},y:{grid:{color:'rgba(255,255,255,.06)'},ticks:{color:'#718078',font:{size:9}}}}};
-async function getJSON(url){const r=await fetch(url);if(!r.ok)throw new Error(`Request failed: ${r.status}`);return r.json()}
-function makeYieldChart(labels,data){const c=document.getElementById('yieldChart');if(!c)return;if(yieldChart)yieldChart.destroy();yieldChart=new Chart(c,{type:'line',data:{labels,datasets:[{data,borderColor:'#b8ef55',backgroundColor:'rgba(184,239,85,.08)',fill:true,tension:.4,pointRadius:3,pointBackgroundColor:'#b8ef55'}]},options:common})}
-function makeCropChart(counts){const c=document.getElementById('cropChart');if(!c)return;if(cropChart)cropChart.destroy();cropChart=new Chart(c,{type:'doughnut',data:{labels:Object.keys(counts),datasets:[{data:Object.values(counts),backgroundColor:['#b8ef55','#6ca44a','#d4b85a','#5f8970','#9fc35c','#446c55','#d37b4d'],borderWidth:0}]},options:{responsive:true,cutout:'68%',plugins:{legend:{position:'bottom',labels:{color:'#9aaa9f',font:{size:9},boxWidth:8,padding:12}}}}})}
-async function refreshDashboard(){try{const d=await getJSON('/api/live');document.getElementById('totalPred').textContent=d.total_predictions;document.getElementById('avgYield').innerHTML=`${d.avg_yield.toFixed(2)} <i>t/ha</i>`;makeCropChart(d.by_crop);const a=await getJSON('/api/analytics');makeYieldChart(a.labels.slice(-14),a.yields.slice(-14));if(a.yields.length){let i=a.yields.length-1;document.getElementById('rainVal').textContent=a.rainfall[i]+' mm';document.getElementById('tempVal').textContent=a.temperature[i]+' °C';document.getElementById('humVal').textContent=(a.humidity?.[i]??'--')+' %';document.getElementById('rainMeter').style.width=Math.min(100,a.rainfall[i]/18)+'%';document.getElementById('tempMeter').style.width=Math.min(100,a.temperature[i]/40*100)+'%';document.getElementById('humMeter').style.width=Math.min(100,a.humidity?.[i]||65)+'%'}}catch(e){console.debug(e)}}
-function emptyAnalytics(){const empty=document.getElementById('analyticsEmpty'),charts=document.getElementById('analyticsCharts');if(empty)empty.hidden=false;if(charts)charts.hidden=true}
-async function analytics(){try{if(typeof Chart==='undefined')throw new Error('Chart.js is unavailable');const a=await getJSON('/api/analytics');document.getElementById('analyticsTotal').textContent=a.total;document.getElementById('analyticsAvgYield').innerHTML=`${Number(a.avg_yield||0).toFixed(2)} <i>t/ha</i>`;document.getElementById('analyticsAvgRain').innerHTML=`${Number(a.avg_rainfall||0).toFixed(1)} <i>mm</i>`;document.getElementById('analyticsHighRisk').textContent=a.high_risk;if(!a.total){emptyAnalytics();return}
-new Chart(document.getElementById('analyticsYield'),{type:'line',data:{labels:a.labels,datasets:[{label:'Yield (t/ha)',data:a.yields,borderColor:'#b8ef55',backgroundColor:'rgba(184,239,85,.08)',fill:true,tension:.35,pointRadius:a.yields.length>40?1.5:3,pointBackgroundColor:'#b8ef55'}]},options:common});
-new Chart(document.getElementById('analyticsCrop'),{type:'doughnut',data:{labels:Object.keys(a.crop_counts),datasets:[{data:Object.values(a.crop_counts),backgroundColor:['#b8ef55','#6ca44a','#d4b85a','#5f8970','#9fc35c','#446c55','#d37b4d'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'bottom',labels:{color:'#9aaa9f',font:{size:9},boxWidth:10,padding:12}}}}});
-new Chart(document.getElementById('environmentChart'),{type:'line',data:{labels:a.labels,datasets:[{label:'Rainfall (mm)',data:a.rainfall,borderColor:'#6ca44a',tension:.35},{label:'Temperature (°C)',data:a.temperature,borderColor:'#d4b85a',tension:.35}]},options:{...common,plugins:{legend:{display:true,labels:{color:'#9aaa9f',font:{size:9},boxWidth:10}}}}});
-}catch(e){console.debug('Analytics:',e);if(e.message!=='Chart.js is unavailable')emptyAnalytics()}}
-if(window.CY_DASH){refreshDashboard();setInterval(refreshDashboard,5000)}
-if(window.CY_ANALYTICS)analytics();
+﻿let yieldChart = null;
+let cropChart = null;
+let environmentChart = null;
+
+const common = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+        legend: {
+            display: false
+        }
+    },
+    scales: {
+        x: {
+            grid: {
+                display: false
+            },
+            ticks: {
+                color: "#718078",
+                font: {
+                    size: 9
+                }
+            }
+        },
+        y: {
+            grid: {
+                color: "rgba(255,255,255,.06)"
+            },
+            ticks: {
+                color: "#718078",
+                font: {
+                    size: 9
+                }
+            }
+        }
+    }
+};
+
+function getJSON(url) {
+    return fetch(url)
+        .then(function(response) {
+            if (!response.ok) {
+                throw new Error("HTTP " + response.status);
+            }
+
+            return response.json();
+        });
+}
+
+function loadAnalytics() {
+    console.log("CY Analytics: starting...");
+
+    getJSON("/api/analytics")
+        .then(function(data) {
+            console.log("CY Analytics data:", data);
+
+            const total = document.getElementById("analyticsTotal");
+            const avgYield = document.getElementById("analyticsAvgYield");
+            const avgRain = document.getElementById("analyticsAvgRain");
+            const highRisk = document.getElementById("analyticsHighRisk");
+
+            if (total) {
+                total.textContent = data.total || 0;
+            }
+
+            if (avgYield) {
+                avgYield.innerHTML =
+                    Number(data.avg_yield || 0).toFixed(2) +
+                    ' <i>t/ha</i>';
+            }
+
+            if (avgRain) {
+                avgRain.innerHTML =
+                    Number(data.avg_rainfall || 0).toFixed(1) +
+                    ' <i>mm</i>';
+            }
+
+            if (highRisk) {
+                highRisk.textContent = data.high_risk || 0;
+            }
+
+            if (!data.total) {
+                console.log("CY Analytics: no prediction records.");
+                return;
+            }
+
+            if (typeof Chart === "undefined") {
+                console.error("Chart.js is not available.");
+                return;
+            }
+
+            /*
+             * Destroy existing charts before recreating them.
+             * This prevents duplicate-chart errors if analytics
+             * is loaded more than once.
+             */
+
+            if (yieldChart) {
+                yieldChart.destroy();
+            }
+
+            if (cropChart) {
+                cropChart.destroy();
+            }
+
+            if (environmentChart) {
+                environmentChart.destroy();
+            }
+
+            const yieldCanvas =
+                document.getElementById("analyticsYield");
+
+            if (yieldCanvas) {
+                yieldChart = new Chart(yieldCanvas, {
+                    type: "line",
+
+                    data: {
+                        labels: data.labels || [],
+
+                        datasets: [
+                            {
+                                label: "Yield (t/ha)",
+                                data: data.yields || [],
+                                tension: 0.35
+                            }
+                        ]
+                    },
+
+                    options: {
+                        ...common,
+
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+
+                console.log("Yield chart created.");
+            }
+
+            const cropCanvas =
+                document.getElementById("analyticsCrop");
+
+            if (cropCanvas) {
+                const cropCounts =
+                    data.crop_counts || {};
+
+                cropChart = new Chart(cropCanvas, {
+                    type: "doughnut",
+
+                    data: {
+                        labels: Object.keys(cropCounts),
+
+                        datasets: [
+                            {
+                                data: Object.values(cropCounts)
+                            }
+                        ]
+                    },
+
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+
+                        plugins: {
+                            legend: {
+                                display: true
+                            }
+                        }
+                    }
+                });
+
+                console.log("Crop chart created.");
+            }
+
+            const environmentCanvas =
+                document.getElementById("environmentChart");
+
+            if (environmentCanvas) {
+                environmentChart = new Chart(
+                    environmentCanvas,
+                    {
+                        type: "line",
+
+                        data: {
+                            labels: data.labels || [],
+
+                            datasets: [
+                                {
+                                    label: "Rainfall (mm)",
+                                    data: data.rainfall || [],
+                                    tension: 0.35
+                                },
+                                {
+                                    label: "Temperature (°C)",
+                                    data: data.temperature || [],
+                                    tension: 0.35
+                                }
+                            ]
+                        },
+
+                        options: {
+                            ...common,
+
+                            plugins: {
+                                legend: {
+                                    display: true
+                                }
+                            }
+                        }
+                    }
+                );
+
+                console.log(
+                    "Environment chart created."
+                );
+            }
+        })
+
+        .catch(function(error) {
+            console.error(
+                "CY Analytics error:",
+                error
+            );
+        });
+}
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+        console.log("CY App loaded.");
+
+        console.log(
+            "Chart.js:",
+            typeof Chart
+        );
+
+        console.log(
+            "Analytics enabled:",
+            window.CY_ANALYTICS
+        );
+
+        if (window.CY_ANALYTICS) {
+            loadAnalytics();
+        }
+    }
+);

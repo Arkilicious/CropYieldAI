@@ -1,13 +1,236 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#071b12"><title>{% block title %}CropYield AI{% endblock %}</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"><script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script><link rel="stylesheet" href="{{ url_for('static',filename='css/app.css') }}"></head><body><div class="app-shell"><aside class="sidebar"><a class="brand" href="{{ url_for('main.dashboard') }}"><span class="brand-mark">CY</span><span>CropYield <b>AI</b></span></a><div class="side-label">COMMAND CENTER</div><nav>
-<a class="navitem {% if request.endpoint=='main.dashboard' %}active{% endif %}" href="{{ url_for('main.dashboard') }}">⌂ <span>Dashboard</span></a>
-<a class="navitem {% if request.endpoint=='main.prediction' %}active{% endif %}" href="{{ url_for('main.prediction') }}">✦ <span>Prediction Studio</span></a>
-<a class="navitem {% if request.endpoint=='main.history' %}active{% endif %}" href="{{ url_for('main.history') }}">◷ <span>Prediction History</span></a>
-<a class="navitem {% if request.endpoint=='main.analytics' %}active{% endif %}" href="{{ url_for('main.analytics') }}">◌ <span>Analytics</span></a>
-<a class="navitem {% if request.endpoint=='main.model_lab' %}active{% endif %}" href="{{ url_for('main.model_lab') }}">◈ <span>Model Lab</span></a>
-{% if current_user.role=='admin' %}<a class="navitem admin-nav {% if request.endpoint and request.endpoint.startswith('main.admin') %}active{% endif %}" href="{{ url_for('main.admin') }}">▦ <span>Admin Command</span></a>{% endif %}
-</nav><div class="side-bottom"><div class="user-mini"><div class="avatar">{{ current_user.name[:1]|upper }}</div><div><strong>{{ current_user.name }}</strong><small>{{ current_user.role|title }} account</small></div></div><a class="logout" href="{{ url_for('auth.logout') }}">Sign out</a></div></aside><main class="main"><header class="topbar"><div><span class="mobile-brand">CropYield <b>AI</b></span><span class="crumb">Agricultural Intelligence / {% block crumb %}Dashboard{% endblock %}</span></div><div class="top-actions"><span class="live-pill"><i></i> AI SYSTEM ONLINE</span><a class="icon-btn" href="{{ url_for('main.profile') }}">⚙</a></div></header>{% with messages=get_flashed_messages(with_categories=true) %}{% if messages %}<div class="flash-wrap">{% for cat,msg in messages %}<div class="flash {{cat}}">{{msg}}</div>{% endfor %}</div>{% endif %}{% endwith %}{% block content %}{% endblock %}</main></div><nav class="mobile-nav">
-<a class="{% if request.endpoint=='main.dashboard' %}active{% endif %}" href="{{url_for('main.dashboard')}}">⌂<small>Home</small></a>
-<a class="{% if request.endpoint=='main.prediction' %}active{% endif %}" href="{{url_for('main.prediction')}}">✦<small>Predict</small></a>
-<a class="{% if request.endpoint=='main.history' %}active{% endif %}" href="{{url_for('main.history')}}">◷<small>History</small></a>
-{% if current_user.role=='admin' %}<a class="{% if request.endpoint=='main.admin' %}active{% endif %}" href="{{url_for('main.admin')}}">▦<small>Admin</small></a>{% else %}<a href="{{url_for('main.profile')}}">⚙<small>Profile</small></a>{% endif %}
-</nav><script src="{{ url_for('static',filename='js/app.js') }}"></script>{% block scripts %}{% endblock %}</body></html>
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#071b12">
+
+```
+<title>{% block title %}CropYield AI{% endblock %}</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+    rel="stylesheet"
+>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/app.css') }}"
+>
+```
+
+</head>
+
+<body>
+
+<div class="app-shell">
+
+```
+<aside class="sidebar">
+
+    <a class="brand" href="{{ url_for('main.dashboard') }}">
+        <span class="brand-mark">CY</span>
+        <span>CropYield <b>AI</b></span>
+    </a>
+
+    <div class="side-label">COMMAND CENTER</div>
+
+    <nav>
+
+        <a
+            class="navitem {% if request.endpoint=='main.dashboard' %}active{% endif %}"
+            href="{{ url_for('main.dashboard') }}"
+        >
+            ⌂ <span>Dashboard</span>
+        </a>
+
+        <a
+            class="navitem {% if request.endpoint=='main.prediction' %}active{% endif %}"
+            href="{{ url_for('main.prediction') }}"
+        >
+            ✦ <span>Prediction Studio</span>
+        </a>
+
+        <a
+            class="navitem {% if request.endpoint=='main.history' %}active{% endif %}"
+            href="{{ url_for('main.history') }}"
+        >
+            ◷ <span>Prediction History</span>
+        </a>
+
+        <a
+            class="navitem {% if request.endpoint=='main.analytics' %}active{% endif %}"
+            href="{{ url_for('main.analytics') }}"
+        >
+            ◌ <span>Analytics</span>
+        </a>
+
+        <a
+            class="navitem {% if request.endpoint=='main.model_lab' %}active{% endif %}"
+            href="{{ url_for('main.model_lab') }}"
+        >
+            ◈ <span>Model Lab</span>
+        </a>
+
+        {% if current_user.role=='admin' %}
+        <a
+            class="navitem admin-nav {% if request.endpoint and request.endpoint.startswith('main.admin') %}active{% endif %}"
+            href="{{ url_for('main.admin') }}"
+        >
+            ▦ <span>Admin Command</span>
+        </a>
+        {% endif %}
+
+    </nav>
+
+    <div class="side-bottom">
+
+        <div class="user-mini">
+
+            <div class="avatar">
+                {{ current_user.name[:1]|upper }}
+            </div>
+
+            <div>
+                <strong>{{ current_user.name }}</strong>
+                <small>{{ current_user.role|title }} account</small>
+            </div>
+
+        </div>
+
+        <a class="logout" href="{{ url_for('auth.logout') }}">
+            Sign out
+        </a>
+
+    </div>
+
+</aside>
+
+
+<main class="main">
+
+    <header class="topbar">
+
+        <div>
+
+            <span class="mobile-brand">
+                CropYield <b>AI</b>
+            </span>
+
+            <span class="crumb">
+                Agricultural Intelligence /
+                {% block crumb %}Dashboard{% endblock %}
+            </span>
+
+        </div>
+
+        <div class="top-actions">
+
+            <span class="live-pill">
+                <i></i> AI SYSTEM ONLINE
+            </span>
+
+            <a
+                class="icon-btn"
+                href="{{ url_for('main.profile') }}"
+            >
+                ⚙
+            </a>
+
+        </div>
+
+    </header>
+
+
+    {% with messages=get_flashed_messages(with_categories=true) %}
+
+        {% if messages %}
+
+        <div class="flash-wrap">
+
+            {% for cat,msg in messages %}
+
+            <div class="flash {{cat}}">
+                {{msg}}
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    {% block content %}
+    {% endblock %}
+
+</main>
+```
+
+</div>
+
+<nav class="mobile-nav">
+
+```
+<a
+    class="{% if request.endpoint=='main.dashboard' %}active{% endif %}"
+    href="{{ url_for('main.dashboard') }}"
+>
+    ⌂
+    <small>Home</small>
+</a>
+
+<a
+    class="{% if request.endpoint=='main.prediction' %}active{% endif %}"
+    href="{{ url_for('main.prediction') }}"
+>
+    ✦
+    <small>Predict</small>
+</a>
+
+<a
+    class="{% if request.endpoint=='main.history' %}active{% endif %}"
+    href="{{ url_for('main.history') }}"
+>
+    ◷
+    <small>History</small>
+</a>
+
+{% if current_user.role=='admin' %}
+
+<a
+    class="{% if request.endpoint=='main.admin' %}active{% endif %}"
+    href="{{ url_for('main.admin') }}"
+>
+    ▦
+    <small>Admin</small>
+</a>
+
+{% else %}
+
+<a href="{{ url_for('main.profile') }}">
+    ⚙
+    <small>Profile</small>
+</a>
+
+{% endif %}
+```
+
+</nav>
+
+{% block scripts %}
+{% endblock %}
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
+</body>
+</html>
