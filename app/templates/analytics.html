@@ -1,43 +1,242 @@
 {% extends 'base.html' %}
+
 {% block title %}Analytics | CropYield AI{% endblock %}
-{% block crumb %}Analytics{% endblock %}
+
 {% block content %}
+
 <div class="page-head analytics-head">
-  <div>
+  <div class="page-intro">
     <div class="eyebrow">FIELD ANALYTICS</div>
     <h1>Read the patterns behind your predictions.</h1>
-    <p>Compare yield forecasts with environmental conditions and crop selection.</p>
+    <p>
+      Compare yield forecasts with environmental conditions and crop selection.
+    </p>
   </div>
-  <div class="analytics-scope"><span class="status-dot"></span>{{ scope_label }}</div>
+
+  <div class="analytics-scope">
+    <span class="status-dot"></span>
+    <span>{{ scope_label }}</span>
+  </div>
 </div>
 
-<div class="analytics-kpis">
-  <div class="panel analytics-kpi"><span>Total predictions</span><strong id="analyticsTotal">0</strong><small>records in this view</small></div>
-  <div class="panel analytics-kpi"><span>Average yield</span><strong id="analyticsAvgYield">0.00 <i>t/ha</i></strong><small>predicted output</small></div>
-  <div class="panel analytics-kpi"><span>Average rainfall</span><strong id="analyticsAvgRain">0 <i>mm</i></strong><small>environmental signal</small></div>
-  <div class="panel analytics-kpi"><span>High-risk cases</span><strong id="analyticsHighRisk">0</strong><small>requires attention</small></div>
-</div>
 
+<!-- ANALYTICS KPI STRIP -->
+<section class="analytics-kpis">
+
+  <div class="analytics-stat-card">
+    <div class="analytics-stat-icon">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 5h16v14H4z"></path>
+        <path d="M8 9h8M8 13h5"></path>
+      </svg>
+    </div>
+
+    <div class="analytics-stat-content">
+      <span>Total predictions</span>
+      <strong id="analyticsTotal">0</strong>
+      <small>Records in this view</small>
+    </div>
+  </div>
+
+
+  <div class="analytics-stat-card">
+    <div class="analytics-stat-icon accent">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 17l5-5 4 3 7-8"></path>
+        <path d="M20 7v5h-5"></path>
+      </svg>
+    </div>
+
+    <div class="analytics-stat-content">
+      <span>Average yield</span>
+      <strong id="analyticsAvgYield">0.00 <i>t/ha</i></strong>
+      <small>Predicted output</small>
+    </div>
+  </div>
+
+
+  <div class="analytics-stat-card">
+    <div class="analytics-stat-icon">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 3s6 6.1 6 11a6 6 0 0 1-12 0c0-4.9 6-11 6-11z"></path>
+        <path d="M9.5 15.5c.5 1.1 1.4 1.7 2.7 1.7"></path>
+      </svg>
+    </div>
+
+    <div class="analytics-stat-content">
+      <span>Average rainfall</span>
+      <strong id="analyticsAvgRain">0 <i>mm</i></strong>
+      <small>Environmental signal</small>
+    </div>
+  </div>
+
+
+  <div class="analytics-stat-card risk-stat">
+    <div class="analytics-stat-icon warning">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 3l9 16H3L12 3z"></path>
+        <path d="M12 9v4M12 16h.01"></path>
+      </svg>
+    </div>
+
+    <div class="analytics-stat-content">
+      <span>High-risk cases</span>
+      <strong id="analyticsHighRisk">0</strong>
+      <small>Requires attention</small>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- EMPTY STATE -->
 <div id="analyticsEmpty" class="panel analytics-empty" hidden>
-  <div class="empty-icon">◌</div>
-  <h2>No prediction data yet</h2>
-  <p>Run a prediction in Prediction Studio first. Once a result is saved, the yield, crop and environmental charts will populate automatically.</p>
-  <a class="btn primary" href="{{ url_for('main.prediction') }}">Open Prediction Studio</a>
+
+  <div class="analytics-empty-icon">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 19V5"></path>
+      <path d="M4 19h16"></path>
+      <path d="M7 15l3-4 3 2 5-7"></path>
+    </svg>
+  </div>
+
+  <div class="analytics-empty-content">
+    <span class="eyebrow">NO DATA AVAILABLE</span>
+    <h2>No prediction data yet</h2>
+
+    <p>
+      Run a prediction in Prediction Studio first. Once a result is saved,
+      the yield, crop and environmental charts will populate automatically.
+    </p>
+
+    <a class="lime-btn" href="{{ url_for('main.prediction') }}">
+      Open Prediction Studio
+    </a>
+  </div>
+
 </div>
 
+
+<!-- ANALYTICS COMMAND CENTER -->
 <div id="analyticsCharts" class="analytics-grid">
-  <section class="panel wide">
-    <div class="panel-head"><div><h2>Yield trend</h2><span>Predicted tonnes per hectare over time</span></div></div>
-    <div class="chart-wrap"><canvas id="analyticsYield"></canvas></div>
+
+  <!-- YIELD TREND -->
+  <section class="panel analytics-panel analytics-yield-panel">
+
+    <div class="panel-head analytics-panel-head">
+
+      <div class="panel-title-group">
+
+        <div class="panel-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 18V6"></path>
+            <path d="M4 18h16"></path>
+            <path d="M7 15l3-4 3 2 5-7"></path>
+          </svg>
+        </div>
+
+        <div>
+          <h2>Yield trend</h2>
+          <span>Predicted tonnes per hectare over time</span>
+        </div>
+
+      </div>
+
+      <span class="panel-status">
+        <i></i>
+        LIVE
+      </span>
+
+    </div>
+
+    <div class="chart-wrap analytics-chart">
+      <canvas id="analyticsYield"></canvas>
+    </div>
+
   </section>
-  <section class="panel">
-    <div class="panel-head"><div><h2>Crop distribution</h2><span>Predictions by crop</span></div></div>
-    <div class="chart-wrap chart-doughnut"><canvas id="analyticsCrop"></canvas></div>
+
+
+  <!-- CROP DISTRIBUTION -->
+  <section class="panel analytics-panel analytics-crop-panel">
+
+    <div class="panel-head analytics-panel-head">
+
+      <div class="panel-title-group">
+
+        <div class="panel-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 20V10"></path>
+            <path d="M12 13c-4 0-7-2.5-7-6 4 0 7 2.5 7 6z"></path>
+            <path d="M12 10c0-3.5 3-6 7-6 0 3.5-3 6-7 6z"></path>
+          </svg>
+        </div>
+
+        <div>
+          <h2>Crop distribution</h2>
+          <span>Predictions by crop</span>
+        </div>
+
+      </div>
+
+      <div class="panel-icon subtle">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 12h12"></path>
+          <path d="M12 6v12"></path>
+        </svg>
+      </div>
+
+    </div>
+
+    <div class="chart-wrap chart-doughnut analytics-chart">
+      <canvas id="analyticsCrop"></canvas>
+    </div>
+
   </section>
-  <section class="panel wide">
-    <div class="panel-head"><div><h2>Rainfall and temperature</h2><span>Environmental signals associated with predictions</span></div></div>
-    <div class="chart-wrap"><canvas id="environmentChart"></canvas></div>
+
+
+  <!-- ENVIRONMENTAL SIGNALS -->
+  <section class="panel analytics-panel analytics-environment-panel">
+
+    <div class="panel-head analytics-panel-head">
+
+      <div class="panel-title-group">
+
+        <div class="panel-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 17a5 5 0 0 1 4.9-5A6 6 0 1 1 18 17"></path>
+            <path d="M12 13v7"></path>
+            <path d="M9 17l3 3 3-3"></path>
+          </svg>
+        </div>
+
+        <div>
+          <h2>Rainfall and temperature</h2>
+          <span>
+            Environmental signals associated with predictions
+          </span>
+        </div>
+
+      </div>
+
+      <span class="signal-badge">
+        ENVIRONMENT
+      </span>
+
+    </div>
+
+    <div class="chart-wrap analytics-chart">
+      <canvas id="environmentChart"></canvas>
+    </div>
+
   </section>
+
 </div>
+
 {% endblock %}
-{% block scripts %}<script>window.CY_ANALYTICS=true;</script>{% endblock %}
+
+
+{% block scripts %}
+<script>
+  window.CY_ANALYTICS = true;
+</script>
+{% endblock %}

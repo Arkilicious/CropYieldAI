@@ -1,236 +1,370 @@
-<!doctype html>
-
-<html lang="en">
-
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="dark">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="theme-color" content="#071b12">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-```
-<title>{% block title %}CropYield AI{% endblock %}</title>
+    <meta name="theme-color" content="#07110b">
+    <meta name="description" content="CropYield AI intelligent agricultural prediction platform.">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>{% block title %}CropYield AI{% endblock %}</title>
 
-<link
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
-    rel="stylesheet"
->
+    <!-- Prevent theme flash -->
+    <script>
+        (function () {
+            const theme = localStorage.getItem("cropyield-theme") || "dark";
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+            document.documentElement.setAttribute("data-theme", theme);
+            document.documentElement.classList.add("theme-" + theme);
+            document.documentElement.style.colorScheme = theme;
+        })();
+    </script>
 
-<link
-    rel="stylesheet"
-    href="{{ url_for('static', filename='css/app.css') }}"
->
-```
+    <!-- Global theme controller -->
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
 
+    <!-- Main stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+
+    <!-- Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
+    {% block head %}{% endblock %}
 </head>
 
 <body>
 
 <div class="app-shell">
 
-```
-<aside class="sidebar">
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
+    <aside class="sidebar" id="sidebar">
 
-    <a class="brand" href="{{ url_for('main.dashboard') }}">
-        <span class="brand-mark">CY</span>
-        <span>CropYield <b>AI</b></span>
-    </a>
+        <!-- Brand -->
+        <div class="sidebar-brand">
+            <a href="{{ url_for('main.dashboard') }}" class="brand-link">
+                <span class="brand-mark">CY</span>
 
-    <div class="side-label">COMMAND CENTER</div>
-
-    <nav>
-
-        <a
-            class="navitem {% if request.endpoint=='main.dashboard' %}active{% endif %}"
-            href="{{ url_for('main.dashboard') }}"
-        >
-            ⌂ <span>Dashboard</span>
-        </a>
-
-        <a
-            class="navitem {% if request.endpoint=='main.prediction' %}active{% endif %}"
-            href="{{ url_for('main.prediction') }}"
-        >
-            ✦ <span>Prediction Studio</span>
-        </a>
-
-        <a
-            class="navitem {% if request.endpoint=='main.history' %}active{% endif %}"
-            href="{{ url_for('main.history') }}"
-        >
-            ◷ <span>Prediction History</span>
-        </a>
-
-        <a
-            class="navitem {% if request.endpoint=='main.analytics' %}active{% endif %}"
-            href="{{ url_for('main.analytics') }}"
-        >
-            ◌ <span>Analytics</span>
-        </a>
-
-        <a
-            class="navitem {% if request.endpoint=='main.model_lab' %}active{% endif %}"
-            href="{{ url_for('main.model_lab') }}"
-        >
-            ◈ <span>Model Lab</span>
-        </a>
-
-        {% if current_user.role=='admin' %}
-        <a
-            class="navitem admin-nav {% if request.endpoint and request.endpoint.startswith('main.admin') %}active{% endif %}"
-            href="{{ url_for('main.admin') }}"
-        >
-            ▦ <span>Admin Command</span>
-        </a>
-        {% endif %}
-
-    </nav>
-
-    <div class="side-bottom">
-
-        <div class="user-mini">
-
-            <div class="avatar">
-                {{ current_user.name[:1]|upper }}
-            </div>
-
-            <div>
-                <strong>{{ current_user.name }}</strong>
-                <small>{{ current_user.role|title }} account</small>
-            </div>
-
+                <span class="brand-text">
+                    CropYield <strong>AI</strong>
+                </span>
+            </a>
         </div>
 
-        <a class="logout" href="{{ url_for('auth.logout') }}">
-            Sign out
-        </a>
 
-    </div>
+        <!-- Navigation -->
+        <nav class="sidebar-nav">
 
-</aside>
+            <div class="nav-section-label">WORKSPACE</div>
+
+            <!-- Dashboard -->
+            <a href="{{ url_for('main.dashboard') }}" class="nav-item">
+                <span class="nav-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M3 10.5 12 3l9 7.5"></path>
+                        <path d="M5 9.5V21h14V9.5"></path>
+                        <path d="M9 21v-6h6v6"></path>
+                    </svg>
+                </span>
+                <span>Dashboard</span>
+            </a>
 
 
-<main class="main">
+            <!-- Prediction -->
+            <a href="{{ url_for('main.prediction') }}" class="nav-item">
+                <span class="nav-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 3v18"></path>
+                        <path d="M3 12h18"></path>
+                        <path d="m5.5 5.5 13 13"></path>
+                        <path d="m18.5 5.5-13 13"></path>
+                    </svg>
+                </span>
+                <span>Prediction</span>
+            </a>
 
-    <header class="topbar">
 
-        <div>
+            <!-- History -->
+            <a href="{{ url_for('main.history') }}" class="nav-item">
+                <span class="nav-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M4 5h16"></path>
+                        <path d="M4 10h16"></path>
+                        <path d="M4 15h16"></path>
+                        <path d="M4 20h16"></path>
+                        <circle cx="7" cy="5" r="1"></circle>
+                        <circle cx="7" cy="10" r="1"></circle>
+                        <circle cx="7" cy="15" r="1"></circle>
+                        <circle cx="7" cy="20" r="1"></circle>
+                    </svg>
+                </span>
+                <span>Prediction History</span>
+            </a>
 
-            <span class="mobile-brand">
-                CropYield <b>AI</b>
-            </span>
 
-            <span class="crumb">
-                Agricultural Intelligence /
-                {% block crumb %}Dashboard{% endblock %}
-            </span>
+            <!-- Analytics -->
+            <a href="{{ url_for('main.analytics') }}" class="nav-item">
+                <span class="nav-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M4 19V5"></path>
+                        <path d="M4 19h17"></path>
+                        <path d="m7 15 4-4 3 2 5-6"></path>
+                        <path d="M16 7h3v3"></path>
+                    </svg>
+                </span>
+                <span>Analytics</span>
+            </a>
 
-        </div>
 
-        <div class="top-actions">
+            <div class="nav-section-label">INTELLIGENCE</div>
 
-            <span class="live-pill">
-                <i></i> AI SYSTEM ONLINE
-            </span>
 
-            <a
-                class="icon-btn"
-                href="{{ url_for('main.profile') }}"
-            >
-                ⚙
+            <!-- Model Lab -->
+            <a href="{{ url_for('main.model_lab') }}" class="nav-item">
+                <span class="nav-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <rect x="4" y="4" width="16" height="16" rx="3"></rect>
+                        <path d="M8 9h8"></path>
+                        <path d="M8 13h5"></path>
+                        <path d="M8 17h3"></path>
+                        <circle cx="17" cy="13" r="1"></circle>
+                    </svg>
+                </span>
+                <span>Model Lab</span>
+            </a>
+
+
+            <!-- =================================================
+                 MANAGEMENT
+                 ================================================= -->
+
+            {% if current_user.is_authenticated and current_user.role == 'admin' %}
+
+            <div class="nav-section-label">MANAGEMENT</div>
+
+            <a href="{{ url_for('main.admin') }}" class="nav-item">
+                <span class="nav-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 3 20 7v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4Z"></path>
+                        <path d="M12 8v5"></path>
+                        <circle cx="12" cy="16.5" r=".8"></circle>
+                    </svg>
+                </span>
+                <span>Admin Command Center</span>
+            </a>
+
+            {% endif %}
+
+        </nav>
+
+
+        <!-- Bottom navigation -->
+        <div class="sidebar-bottom">
+
+            <!-- Profile -->
+            <a href="{{ url_for('main.profile') }}" class="nav-item">
+                <span class="nav-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="12" cy="8" r="4"></circle>
+                        <path d="M4 21c.8-4 3.5-6 8-6s7.2 2 8 6"></path>
+                    </svg>
+                </span>
+                <span>Profile</span>
+            </a>
+
+
+            <!-- Logout -->
+            <a href="{{ url_for('auth.logout') }}" class="nav-item">
+                <span class="nav-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M10 4H5v16h5"></path>
+                        <path d="M14 8l4 4-4 4"></path>
+                        <path d="M8 12h10"></path>
+                    </svg>
+                </span>
+                <span>Logout</span>
             </a>
 
         </div>
 
-    </header>
+    </aside>
 
 
-    {% with messages=get_flashed_messages(with_categories=true) %}
+    <!-- =====================================================
+         MAIN AREA
+         ===================================================== -->
+    <div class="main">
 
-        {% if messages %}
+        <!-- TOP BAR -->
+        <header class="topbar">
 
-        <div class="flash-wrap">
+            <button
+                type="button"
+                class="mobile-menu-button"
+                id="mobileMenuButton"
+                aria-label="Open navigation"
+            >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 6h16"></path>
+                    <path d="M4 12h16"></path>
+                    <path d="M4 18h16"></path>
+                </svg>
+            </button>
 
-            {% for cat,msg in messages %}
 
-            <div class="flash {{cat}}">
-                {{msg}}
+            <div class="topbar-left">
+
+                {% block page_header %}
+
+                <div class="topbar-heading">
+
+                    <span class="topbar-eyebrow">
+                        CROPYIELD AI
+                    </span>
+
+                    <h1>Intelligent Agriculture</h1>
+
+                </div>
+
+                {% endblock %}
+
             </div>
 
-            {% endfor %}
 
-        </div>
+            <div class="topbar-right">
 
-        {% endif %}
+                <div class="live-pill">
+                    <span class="live-dot"></span>
+                    <span>AI SYSTEM ONLINE</span>
+                </div>
 
-    {% endwith %}
+
+                <!-- Theme toggle -->
+                <button
+                    type="button"
+                    id="themeToggle"
+                    data-theme-toggle
+                    class="theme-toggle"
+                    aria-label="Switch theme"
+                    title="Switch theme"
+                >
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="12" cy="12" r="4"></circle>
+                        <path d="M12 2v2"></path>
+                        <path d="M12 20v2"></path>
+                        <path d="m4.93 4.93 1.41 1.41"></path>
+                        <path d="m17.66 17.66 1.41 1.41"></path>
+                        <path d="M2 12h2"></path>
+                        <path d="M20 12h2"></path>
+                        <path d="m6.34 17.66-1.41 1.41"></path>
+                        <path d="m19.07 4.93-1.41 1.41"></path>
+                    </svg>
+                </button>
 
 
-    {% block content %}
-    {% endblock %}
+                {% if current_user.is_authenticated %}
 
-</main>
-```
+                <a
+                    href="{{ url_for('main.profile') }}"
+                    class="user-menu"
+                    aria-label="Open profile"
+                >
+
+                    <span class="user-avatar">
+                        {{ current_user.name[0]|upper }}
+                    </span>
+
+                    <span class="user-name">
+                        {{ current_user.name }}
+                    </span>
+
+                </a>
+
+                {% endif %}
+
+            </div>
+
+        </header>
+
+
+        <!-- PAGE CONTENT -->
+        <main class="page-content">
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+
+                {% if messages %}
+
+                    <div class="flash-container">
+
+                        {% for category, message in messages %}
+
+                            <div class="flash flash-{{ category }}">
+                                {{ message }}
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% endif %}
+
+            {% endwith %}
+
+
+            {% block content %}{% endblock %}
+
+        </main>
+
+    </div>
 
 </div>
 
-<nav class="mobile-nav">
 
-```
-<a
-    class="{% if request.endpoint=='main.dashboard' %}active{% endif %}"
-    href="{{ url_for('main.dashboard') }}"
->
-    ⌂
-    <small>Home</small>
-</a>
+<!-- =========================================================
+     GLOBAL JAVASCRIPT
+     ========================================================= -->
 
-<a
-    class="{% if request.endpoint=='main.prediction' %}active{% endif %}"
-    href="{{ url_for('main.prediction') }}"
->
-    ✦
-    <small>Predict</small>
-</a>
+<script>
 
-<a
-    class="{% if request.endpoint=='main.history' %}active{% endif %}"
-    href="{{ url_for('main.history') }}"
->
-    ◷
-    <small>History</small>
-</a>
+document.addEventListener("DOMContentLoaded", function () {
 
-{% if current_user.role=='admin' %}
+    const mobileButton =
+        document.getElementById("mobileMenuButton");
 
-<a
-    class="{% if request.endpoint=='main.admin' %}active{% endif %}"
-    href="{{ url_for('main.admin') }}"
->
-    ▦
-    <small>Admin</small>
-</a>
+    const sidebar =
+        document.getElementById("sidebar");
 
-{% else %}
 
-<a href="{{ url_for('main.profile') }}">
-    ⚙
-    <small>Profile</small>
-</a>
+    if (mobileButton && sidebar) {
 
-{% endif %}
-```
+        mobileButton.addEventListener("click", function () {
+            sidebar.classList.toggle("open");
+        });
 
-</nav>
+    }
 
-{% block scripts %}
-{% endblock %}
 
-<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    document.querySelectorAll(".sidebar .nav-item")
+        .forEach(function (link) {
+
+            link.addEventListener("click", function () {
+
+                if (window.innerWidth <= 720 && sidebar) {
+                    sidebar.classList.remove("open");
+                }
+
+            });
+
+        });
+
+});
+
+</script>
+
+
+{% block scripts %}{% endblock %}
 
 </body>
 </html>

@@ -1,0 +1,733 @@
+﻿let yieldChart = null;
+let cropChart = null;
+let environmentChart = null;
+
+const common = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+        legend: {
+            display: false
+        }
+    },
+    scales: {
+        x: {
+            grid: {
+                display: false
+            },
+            ticks: {
+                color: "#718078",
+                font: {
+                    size: 9
+                }
+            }
+        },
+        y: {
+            grid: {
+                color: "rgba(255,255,255,.06)"
+            },
+            ticks: {
+                color: "#718078",
+                font: {
+                    size: 9
+                }
+            }
+        }
+    }
+};
+
+
+function getJSON(url) {
+    return fetch(url, {
+        headers: {
+            "Accept": "application/json"
+        }
+    }).then(function(response) {
+        if (!response.ok) {
+            throw new Error("HTTP " + response.status);
+        }
+
+        return response.json();
+    });
+}
+
+
+/* =========================================================
+   DASHBOARD
+   ========================================================= */
+
+function loadDashboard() {
+    console.log("CY Dashboard: loading...");
+
+    getJSON("/api/analytics")
+        .then(function(data) {
+            console.log("CY Dashboard data:", data);
+
+            updateDashboardKPIs(data);
+            updateEnvironmentalSignals(data);
+            createDashboardCharts(data);
+        })
+        .catch(function(error) {
+            console.error("CY Dashboard error:", error);
+        });
+}
+
+
+function updateDashboardKPIs(data) {
+    const totalPred = document.getElementById("totalPred");
+    const avgYield = document.getElementById("avgYield");
+
+    if (totalPred) {
+        totalPred.textContent = data.total || 0;
+    }
+
+    if (avgYield) {
+        avgYield.innerHTML =
+            Number(data.avg_yield || 0).toFixed(2) +
+            ' <i>t/ha</i>';
+    }
+}
+
+
+function updateEnvironmentalSignals(data) {
+    /*
+     * The API returns arrays ordered by prediction date.
+     * The final item therefore represents the latest prediction.
+     */
+
+    if (!data.total) {
+        setEnvironmentalValue("rainVal", "--");
+        setEnvironmentalValue("tempVal", "--");
+        setEnvironmentalValue("humVal", "--");
+
+        setMeter("rainMeter", 0);
+        setMeter("tempMeter", 0);
+        setMeter("humMeter", 0);
+
+        return;
+    }
+
+    const lastIndex = data.total - 1;
+
+    const rainfall = Number(
+        (data.rainfall || [])[lastIndex] || 0
+    );
+
+    const temperature = Number(
+        (data.temperature || [])[lastIndex] || 0
+    );
+
+    const humidity = Number(
+        (data.humidity || [])[lastIndex] || 0
+    );
+
+    setEnvironmentalValue(
+        "rainVal",
+        rainfall.toFixed(1) + " mm"
+    );
+
+    setEnvironmentalValue(
+        "tempVal",
+        temperature.toFixed(1) + " °C"
+    );
+
+    setEnvironmentalValue(
+        "humVal",
+        humidity.toFixed(1) + " %"
+    );
+
+    /*
+     * The meters use sensible agricultural/environmental
+     * ranges rather than simply treating every value equally.
+     */
+
+    setMeter(
+        "rainMeter",
+        clamp((rainfall / 3000) * 100, 0, 100)
+    );
+
+    setMeter(
+        "tempMeter",
+        clamp((temperature / 50) * 100, 0, 100)
+    );
+
+    setMeter(
+        "humMeter",
+        clamp(humidity, 0, 100)
+    );
+}
+
+
+function setEnvironmentalValue(id, value) {
+    const element = document.getElementById(id);
+
+    if (element) {
+        element.textContent = value;
+    }
+}
+
+
+function setMeter(id, percentage) {
+    const element = document.getElementById(id);
+
+    if (element) {
+        element.style.width =
+            clamp(Number(percentage) || 0, 0, 100) + "%";
+    }
+}
+
+
+function clamp(value, min, max) {
+    return Math.min(Math.max(value, min), max);
+}
+
+
+/* =========================================================
+   DASHBOARD CHARTS
+   ========================================================= */
+
+function createDashboardCharts(data) {
+    if (!data.total) {
+        console.log(
+            "CY Dashboard: no prediction records available."
+        );
+
+        destroyDashboardCharts();
+        return;
+    }
+
+    if (typeof Chart === "undefined") {
+        console.error(
+            "CY Dashboard: Chart.js is not available."
+        );
+
+        return;
+    }
+
+    destroyDashboardCharts();
+
+
+    /* -----------------------------------------------------
+       YIELD INTELLIGENCE
+       ----------------------------------------------------- */
+
+    const yieldCanvas =
+        document.getElementById("yieldChart");
+
+    if (yieldCanvas) {
+        yieldChart = new Chart(yieldCanvas, {
+            type: "line",
+
+            data: {
+                labels: data.labels || [],
+
+                datasets: [{
+                    label: "Yield (t/ha)",
+                    data: data.yields || [],
+                    tension: 0.35,
+                    fill: true,
+                    pointRadius: 3,
+                    pointHoverRadius: 5
+                }]
+            },
+
+            options: {
+                ...common,
+
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return (
+                                    " Yield: " +
+                                    Number(
+                                        context.raw || 0
+                                    ).toFixed(2) +
+                                    " t/ha"
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        console.log(
+            "CY Dashboard: yield chart created."
+        );
+    }
+
+
+    /* -----------------------------------------------------
+       CROP MIX
+       ----------------------------------------------------- */
+
+    const cropCanvas =
+        document.getElementById("cropChart");
+
+    if (cropCanvas) {
+        const cropCounts =
+            data.crop_counts || {};
+
+        const labels =
+            Object.keys(cropCounts);
+
+        const values =
+            Object.values(cropCounts);
+
+        cropChart = new Chart(cropCanvas, {
+            type: "doughnut",
+
+            data: {
+                labels: labels,
+
+                datasets: [{
+                    data: values,
+
+                    borderWidth: 0,
+
+                    hoverOffset: 8
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                cutout: "65%",
+
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: "bottom",
+
+                        labels: {
+                            boxWidth: 10,
+                            padding: 10,
+                            font: {
+                                size: 9
+                            }
+                        }
+                    },
+
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const total =
+                                    values.reduce(
+                                        function(
+                                            sum,
+                                            value
+                                        ) {
+                                            return sum + value;
+                                        },
+                                        0
+                                    );
+
+                                const value =
+                                    Number(
+                                        context.raw || 0
+                                    );
+
+                                const percentage =
+                                    total > 0
+                                        ? (
+                                            value /
+                                            total *
+                                            100
+                                        ).toFixed(1)
+                                        : 0;
+
+                                return (
+                                    " " +
+                                    context.label +
+                                    ": " +
+                                    value +
+                                    " (" +
+                                    percentage +
+                                    "%)"
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        console.log(
+            "CY Dashboard: crop chart created."
+        );
+    }
+}
+
+
+function destroyDashboardCharts() {
+    if (yieldChart) {
+        yieldChart.destroy();
+        yieldChart = null;
+    }
+
+    if (cropChart) {
+        cropChart.destroy();
+        cropChart = null;
+    }
+}
+
+
+/* =========================================================
+   ANALYTICS PAGE
+   ========================================================= */
+
+function loadAnalytics() {
+    console.log("CY Analytics: starting...");
+
+    getJSON("/api/analytics")
+        .then(function(data) {
+            console.log(
+                "CY Analytics data:",
+                data
+            );
+
+            const total =
+                document.getElementById(
+                    "analyticsTotal"
+                );
+
+            const avgYield =
+                document.getElementById(
+                    "analyticsAvgYield"
+                );
+
+            const avgRain =
+                document.getElementById(
+                    "analyticsAvgRain"
+                );
+
+            const highRisk =
+                document.getElementById(
+                    "analyticsHighRisk"
+                );
+
+
+            if (total) {
+                total.textContent =
+                    data.total || 0;
+            }
+
+
+            if (avgYield) {
+                avgYield.innerHTML =
+                    Number(
+                        data.avg_yield || 0
+                    ).toFixed(2) +
+                    ' <i>t/ha</i>';
+            }
+
+
+            if (avgRain) {
+                avgRain.innerHTML =
+                    Number(
+                        data.avg_rainfall || 0
+                    ).toFixed(1) +
+                    ' <i>mm</i>';
+            }
+
+
+            if (highRisk) {
+                highRisk.textContent =
+                    data.high_risk || 0;
+            }
+
+
+            if (!data.total) {
+                console.log(
+                    "CY Analytics: no prediction records."
+                );
+
+                destroyAnalyticsCharts();
+
+                return;
+            }
+
+
+            if (typeof Chart === "undefined") {
+                console.error(
+                    "Chart.js is not available."
+                );
+
+                return;
+            }
+
+
+            destroyAnalyticsCharts();
+
+
+            /* ------------------------------------------------
+               ANALYTICS YIELD CHART
+               ------------------------------------------------ */
+
+            const yieldCanvas =
+                document.getElementById(
+                    "analyticsYield"
+                );
+
+            if (yieldCanvas) {
+                yieldChart =
+                    new Chart(
+                        yieldCanvas,
+                        {
+                            type: "line",
+
+                            data: {
+                                labels:
+                                    data.labels ||
+                                    [],
+
+                                datasets: [{
+                                    label:
+                                        "Yield (t/ha)",
+
+                                    data:
+                                        data.yields ||
+                                        [],
+
+                                    tension:
+                                        0.35
+                                }]
+                            },
+
+                            options: {
+                                ...common,
+
+                                plugins: {
+                                    legend: {
+                                        display:
+                                            false
+                                    }
+                                }
+                            }
+                        }
+                    );
+
+                console.log(
+                    "Yield chart created."
+                );
+            }
+
+
+            /* ------------------------------------------------
+               ANALYTICS CROP CHART
+               ------------------------------------------------ */
+
+            const cropCanvas =
+                document.getElementById(
+                    "analyticsCrop"
+                );
+
+            if (cropCanvas) {
+                const cropCounts =
+                    data.crop_counts || {};
+
+                cropChart =
+                    new Chart(
+                        cropCanvas,
+                        {
+                            type: "doughnut",
+
+                            data: {
+                                labels:
+                                    Object.keys(
+                                        cropCounts
+                                    ),
+
+                                datasets: [{
+                                    data:
+                                        Object.values(
+                                            cropCounts
+                                        )
+                                }]
+                            },
+
+                            options: {
+                                responsive:
+                                    true,
+
+                                maintainAspectRatio:
+                                    false,
+
+                                plugins: {
+                                    legend: {
+                                        display:
+                                            true
+                                    }
+                                }
+                            }
+                        }
+                    );
+
+                console.log(
+                    "Crop chart created."
+                );
+            }
+
+
+            /* ------------------------------------------------
+               ENVIRONMENT CHART
+               ------------------------------------------------ */
+
+            const environmentCanvas =
+                document.getElementById(
+                    "environmentChart"
+                );
+
+            if (environmentCanvas) {
+                environmentChart =
+                    new Chart(
+                        environmentCanvas,
+                        {
+                            type: "line",
+
+                            data: {
+                                labels:
+                                    data.labels ||
+                                    [],
+
+                                datasets: [
+                                    {
+                                        label:
+                                            "Rainfall (mm)",
+
+                                        data:
+                                            data.rainfall ||
+                                            [],
+
+                                        tension:
+                                            0.35
+                                    },
+
+                                    {
+                                        label:
+                                            "Temperature (°C)",
+
+                                        data:
+                                            data.temperature ||
+                                            [],
+
+                                        tension:
+                                            0.35
+                                    }
+                                ]
+                            },
+
+                            options: {
+                                ...common,
+
+                                plugins: {
+                                    legend: {
+                                        display:
+                                            true
+                                    }
+                                }
+                            }
+                        }
+                    );
+
+                console.log(
+                    "Environment chart created."
+                );
+            }
+        })
+        .catch(function(error) {
+            console.error(
+                "CY Analytics error:",
+                error
+            );
+        });
+}
+
+
+function destroyAnalyticsCharts() {
+    if (yieldChart) {
+        yieldChart.destroy();
+        yieldChart = null;
+    }
+
+    if (cropChart) {
+        cropChart.destroy();
+        cropChart = null;
+    }
+
+    if (environmentChart) {
+        environmentChart.destroy();
+        environmentChart = null;
+    }
+}
+
+
+/* =========================================================
+   APPLICATION STARTUP
+   ========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+        console.log("CY App loaded.");
+
+        console.log(
+            "Chart.js:",
+            typeof Chart
+        );
+
+        console.log(
+            "Dashboard enabled:",
+            window.CY_DASH
+        );
+
+        console.log(
+            "Analytics enabled:",
+            window.CY_ANALYTICS
+        );
+
+
+        /*
+         * Dashboard page
+         */
+
+        if (window.CY_DASH) {
+            loadDashboard();
+
+            /*
+             * Refresh dashboard data every 30 seconds.
+             * This means a new prediction will eventually
+             * appear without manually refreshing the page.
+             */
+
+            setInterval(
+                loadDashboard,
+                30000
+            );
+        }
+
+
+        /*
+         * Analytics page
+         */
+
+        if (window.CY_ANALYTICS) {
+            loadAnalytics();
+
+            /*
+             * Keep analytics current as well.
+             */
+
+            setInterval(
+                loadAnalytics,
+                30000
+            );
+        }
+    }
+);

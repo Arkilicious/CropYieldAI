@@ -1,1 +1,2751 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CropYield AI | Intelligent Agriculture</title><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="{{url_for('static',filename='css/app.css')}}"></head><body><div class="landing"><video class="hero-video" autoplay muted loop playsinline poster="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=2200&q=85"><source src="https://assets.mixkit.co/videos/preview/mixkit-wheat-field-under-a-blue-sky-4447-large.mp4" type="video/mp4"></video><div class="video-overlay"></div><header class="landing-nav"><a class="brand light" href="/"><span class="brand-mark">CY</span>CropYield <b>AI</b></a><div class="landing-links"><a href="#features">Platform</a><a href="#workflow">How it works</a><a href="{{url_for('auth.login')}}" class="glass-btn">Sign in</a><a href="{{url_for('auth.register')}}" class="lime-btn">Get started</a></div></header><section class="landing-hero"><div class="eyebrow">AI-POWERED AGRICULTURAL INTELLIGENCE</div><h1>See the future<br><em>of every field.</em></h1><p>Predict crop yield from rainfall, temperature, humidity, soil and crop conditions. Turn agricultural data into decisions farmers can act on.</p><div class="hero-actions"><a class="lime-btn big" href="{{url_for('auth.register')}}">Launch prediction studio ↗</a><a class="glass-btn big" href="{{url_for('auth.login')}}">Explore console</a></div><div class="hero-proof"><div><b>94%+</b><span>model performance</span></div><div><b>5</b><span>environment signals</span></div><div><b>24/7</b><span>decision support</span></div></div></section></div><section class="landing-section" id="features"><div class="section-kicker">ONE AGRICULTURE INTELLIGENCE LAYER</div><h2>Everything you need to move<br>from guesswork to insight.</h2><div class="feature-grid"><article><span>01</span><h3>AI Yield Forecasting</h3><p>Random Forest regression estimates expected yield from validated agricultural conditions.</p></article><article><span>02</span><h3>Environmental Intelligence</h3><p>Understand rainfall, temperature, humidity and soil interactions around every prediction.</p></article><article><span>03</span><h3>Decision Support</h3><p>Translate model outputs into risk levels, field condition scores and practical recommendations.</p></article><article><span>04</span><h3>Operational Analytics</h3><p>Track predictions, crop distribution, model metrics and activity through live dashboards.</p></article></div></section></body></html>
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#07110b"
+    >
+
+    <meta
+        name="description"
+        content="CropYield AI transforms agricultural data into intelligent crop yield predictions, risk insights and actionable recommendations."
+    >
+
+    <title>
+        CropYield AI | Intelligent Agriculture
+    </title>
+
+
+    <!-- =====================================================
+         EARLY GLOBAL THEME INITIALIZATION
+         ===================================================== -->
+    <script>
+        (function () {
+
+            const savedTheme =
+                localStorage.getItem("cropyield-theme") || "dark";
+
+            document.documentElement.setAttribute(
+                "data-theme",
+                savedTheme
+            );
+
+            document.documentElement.classList.add(
+                "theme-" + savedTheme
+            );
+
+            document.documentElement.style.colorScheme =
+                savedTheme;
+
+        })();
+    </script>
+
+
+    <!-- =====================================================
+         GLOBAL THEME CONTROLLER
+         ===================================================== -->
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+
+
+    <!-- =====================================================
+         LANDING PAGE STYLES
+         ===================================================== -->
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+            min-height: 100vh;
+
+            font-family:
+                "DM Sans",
+                Inter,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            background:
+                var(--cy-page);
+
+            color:
+                var(--cy-text);
+
+            overflow-x: hidden;
+
+            transition:
+                background-color .3s ease,
+                color .3s ease;
+        }
+
+
+        body::before {
+            content: "";
+
+            position: fixed;
+
+            inset: 0;
+
+            pointer-events: none;
+
+            z-index: -1;
+
+            background:
+                radial-gradient(
+                    circle at 15% 10%,
+                    rgba(155,216,77,.10),
+                    transparent 28%
+                ),
+
+                radial-gradient(
+                    circle at 90% 25%,
+                    rgba(77,143,45,.08),
+                    transparent 25%
+                );
+        }
+
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+
+        button {
+            font: inherit;
+        }
+
+
+        .landing-container {
+            width:
+                min(
+                    1180px,
+                    calc(100% - 40px)
+                );
+
+            margin:
+                0 auto;
+        }
+
+
+        /* =================================================
+           NAVIGATION
+           ================================================= */
+
+        .landing-nav {
+            position: fixed;
+
+            top: 18px;
+            left: 50%;
+
+            transform:
+                translateX(-50%);
+
+            width:
+                min(
+                    1180px,
+                    calc(100% - 32px)
+                );
+
+            z-index: 1000;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding:
+                12px 14px
+                12px 18px;
+
+            border:
+                1px solid var(--cy-line);
+
+            border-radius: 18px;
+
+            background:
+                color-mix(
+                    in srgb,
+                    var(--cy-page) 82%,
+                    transparent
+                );
+
+            backdrop-filter:
+                blur(22px);
+
+            box-shadow:
+                var(--cy-shadow);
+
+            transition:
+                background-color .3s ease,
+                border-color .3s ease;
+        }
+
+
+        .landing-brand {
+            display: flex;
+
+            align-items: center;
+
+            gap: 11px;
+        }
+
+
+        .landing-brand-mark {
+            width: 42px;
+            height: 42px;
+
+            display: grid;
+
+            place-items: center;
+
+            border-radius: 12px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--cy-accent),
+                    var(--cy-accent-dark)
+                );
+
+            color: #10200d;
+
+            font-size: 13px;
+
+            font-weight: 900;
+
+            box-shadow:
+                0 10px 30px
+                rgba(155,216,77,.18);
+        }
+
+
+        .landing-brand-name {
+            font-size: 16px;
+
+            font-weight: 800;
+
+            letter-spacing: -.03em;
+        }
+
+
+        .landing-brand-name span {
+            color:
+                var(--cy-accent);
+        }
+
+
+        .landing-nav-links {
+            display: flex;
+
+            align-items: center;
+
+            gap: 28px;
+        }
+
+
+        .landing-nav-links a {
+            font-size: 13px;
+
+            font-weight: 600;
+
+            color:
+                var(--cy-muted);
+
+            transition:
+                color .2s ease;
+        }
+
+
+        .landing-nav-links a:hover {
+            color:
+                var(--cy-heading);
+        }
+
+
+        .landing-nav-actions {
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+        }
+
+
+        .landing-theme-toggle {
+            width: 42px;
+            height: 42px;
+
+            border:
+                1px solid var(--cy-line);
+
+            border-radius: 12px;
+
+            display: grid;
+
+            place-items: center;
+
+            background:
+                var(--cy-panel);
+
+            color:
+                var(--cy-text);
+
+            cursor: pointer;
+
+            transition:
+                transform .2s ease,
+                background-color .2s ease,
+                border-color .2s ease;
+        }
+
+
+        .landing-theme-toggle:hover {
+            transform:
+                translateY(-2px);
+        }
+
+
+        .landing-login {
+            padding:
+                11px 17px;
+
+            border-radius:
+                11px;
+
+            font-size:
+                13px;
+
+            font-weight:
+                700;
+
+            color:
+                var(--cy-text);
+        }
+
+
+        .landing-login:hover {
+            color:
+                var(--cy-heading);
+        }
+
+
+        .landing-register {
+            padding:
+                11px 18px;
+
+            border-radius:
+                11px;
+
+            background:
+                var(--cy-accent);
+
+            color:
+                #12210d;
+
+            font-size:
+                13px;
+
+            font-weight:
+                800;
+
+            transition:
+                transform .2s ease,
+                box-shadow .2s ease;
+        }
+
+
+        .landing-register:hover {
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                0 12px 30px
+                rgba(155,216,77,.20);
+        }
+
+
+        /* =================================================
+           HERO
+           ================================================= */
+
+        .hero {
+            position: relative;
+
+            min-height:
+                860px;
+
+            padding:
+                170px 0
+                90px;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            overflow:
+                hidden;
+        }
+
+
+        .hero-video {
+            position:
+                absolute;
+
+            inset:
+                0;
+
+            width:
+                100%;
+
+            height:
+                100%;
+
+            object-fit:
+                cover;
+
+            z-index:
+                -3;
+
+            opacity:
+                .26;
+        }
+
+
+        .hero-overlay {
+            position:
+                absolute;
+
+            inset:
+                0;
+
+            z-index:
+                -2;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--cy-page) 0%,
+                    color-mix(
+                        in srgb,
+                        var(--cy-page) 78%,
+                        transparent
+                    ) 50%,
+                    var(--cy-page) 100%
+                );
+        }
+
+
+        .hero-bottom-fade {
+            position:
+                absolute;
+
+            left:
+                0;
+
+            right:
+                0;
+
+            bottom:
+                0;
+
+            height:
+                240px;
+
+            z-index:
+                -1;
+
+            background:
+                linear-gradient(
+                    transparent,
+                    var(--cy-page)
+                );
+        }
+
+
+        .hero-grid {
+            display:
+                grid;
+
+            grid-template-columns:
+                minmax(0, 1.2fr)
+                minmax(330px, .8fr);
+
+            gap:
+                70px;
+
+            align-items:
+                center;
+        }
+
+
+        .hero-content {
+            max-width:
+                720px;
+        }
+
+
+        .eyebrow {
+            display:
+                inline-flex;
+
+            align-items:
+                center;
+
+            gap:
+                9px;
+
+            padding:
+                8px 12px;
+
+            border:
+                1px solid var(--cy-line);
+
+            border-radius:
+                999px;
+
+            background:
+                color-mix(
+                    in srgb,
+                    var(--cy-panel) 75%,
+                    transparent
+                );
+
+            color:
+                var(--cy-accent);
+
+            font-size:
+                11px;
+
+            font-weight:
+                800;
+
+            letter-spacing:
+                .12em;
+
+            text-transform:
+                uppercase;
+        }
+
+
+        .eyebrow-dot {
+            width:
+                7px;
+
+            height:
+                7px;
+
+            border-radius:
+                50%;
+
+            background:
+                var(--cy-accent);
+
+            box-shadow:
+                0 0 15px
+                var(--cy-accent);
+        }
+
+
+        .hero h1 {
+            margin-top:
+                24px;
+
+            font-size:
+                clamp(
+                    48px,
+                    7vw,
+                    88px
+                );
+
+            line-height:
+                .94;
+
+            letter-spacing:
+                -.065em;
+
+            color:
+                var(--cy-heading);
+
+            max-width:
+                850px;
+        }
+
+
+        .hero h1 span {
+            color:
+                var(--cy-accent);
+        }
+
+
+        .hero-description {
+            margin-top:
+                27px;
+
+            max-width:
+                650px;
+
+            color:
+                var(--cy-muted);
+
+            font-size:
+                17px;
+
+            line-height:
+                1.75;
+        }
+
+
+        .hero-actions {
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                12px;
+
+            margin-top:
+                34px;
+
+            flex-wrap:
+                wrap;
+        }
+
+
+        .primary-button {
+            display:
+                inline-flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            padding:
+                15px 22px;
+
+            border-radius:
+                13px;
+
+            background:
+                var(--cy-accent);
+
+            color:
+                #12210d;
+
+            font-size:
+                14px;
+
+            font-weight:
+                900;
+
+            transition:
+                transform .2s ease,
+                box-shadow .2s ease;
+        }
+
+
+        .primary-button:hover {
+            transform:
+                translateY(-3px);
+
+            box-shadow:
+                0 18px 40px
+                rgba(155,216,77,.20);
+        }
+
+
+        .secondary-button {
+            display:
+                inline-flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            padding:
+                14px 21px;
+
+            border:
+                1px solid var(--cy-line-strong);
+
+            border-radius:
+                13px;
+
+            background:
+                color-mix(
+                    in srgb,
+                    var(--cy-panel) 65%,
+                    transparent
+                );
+
+            color:
+                var(--cy-text);
+
+            font-size:
+                14px;
+
+            font-weight:
+                800;
+        }
+
+
+        .secondary-button:hover {
+            border-color:
+                var(--cy-accent);
+
+            color:
+                var(--cy-heading);
+        }
+
+
+        .hero-metrics {
+            display:
+                flex;
+
+            gap:
+                35px;
+
+            margin-top:
+                55px;
+
+            flex-wrap:
+                wrap;
+        }
+
+
+        .metric strong {
+            display:
+                block;
+
+            color:
+                var(--cy-heading);
+
+            font-size:
+                25px;
+
+            letter-spacing:
+                -.04em;
+        }
+
+
+        .metric span {
+            display:
+                block;
+
+            margin-top:
+                5px;
+
+            color:
+                var(--cy-muted);
+
+            font-size:
+                11px;
+
+            text-transform:
+                uppercase;
+
+            letter-spacing:
+                .08em;
+        }
+
+
+        /* =================================================
+           AI STATUS CARD
+           ================================================= */
+
+        .hero-card {
+            position:
+                relative;
+
+            padding:
+                24px;
+
+            border:
+                1px solid var(--cy-line);
+
+            border-radius:
+                24px;
+
+            background:
+                color-mix(
+                    in srgb,
+                    var(--cy-panel) 86%,
+                    transparent
+                );
+
+            backdrop-filter:
+                blur(25px);
+
+            box-shadow:
+                var(--cy-shadow);
+
+            overflow:
+                hidden;
+        }
+
+
+        .hero-card::before {
+            content:
+                "";
+
+            position:
+                absolute;
+
+            width:
+                220px;
+
+            height:
+                220px;
+
+            top:
+                -110px;
+
+            right:
+                -100px;
+
+            border-radius:
+                50%;
+
+            background:
+                rgba(155,216,77,.12);
+
+            filter:
+                blur(5px);
+        }
+
+
+        .status-header {
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            padding-bottom:
+                18px;
+
+            border-bottom:
+                1px solid var(--cy-line);
+        }
+
+
+        .status-label {
+            color:
+                var(--cy-muted);
+
+            font-size:
+                11px;
+
+            font-weight:
+                800;
+
+            letter-spacing:
+                .1em;
+
+            text-transform:
+                uppercase;
+        }
+
+
+        .status-online {
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                7px;
+
+            color:
+                var(--cy-success);
+
+            font-size:
+                11px;
+
+            font-weight:
+                800;
+        }
+
+
+        .status-online::before {
+            content:
+                "";
+
+            width:
+                7px;
+
+            height:
+                7px;
+
+            border-radius:
+                50%;
+
+            background:
+                var(--cy-success);
+
+            box-shadow:
+                0 0 12px
+                var(--cy-success);
+        }
+
+
+        .status-body {
+            padding-top:
+                28px;
+        }
+
+
+        .status-value {
+            font-size:
+                52px;
+
+            font-weight:
+                900;
+
+            line-height:
+                1;
+
+            letter-spacing:
+                -.06em;
+
+            color:
+                var(--cy-heading);
+        }
+
+
+        .status-value span {
+            font-size:
+                20px;
+
+            color:
+                var(--cy-accent);
+        }
+
+
+        .status-title {
+            margin-top:
+                10px;
+
+            color:
+                var(--cy-muted);
+
+            font-size:
+                13px;
+        }
+
+
+        .progress-track {
+            height:
+                8px;
+
+            margin-top:
+                27px;
+
+            border-radius:
+                999px;
+
+            background:
+                var(--cy-panel-3);
+
+            overflow:
+                hidden;
+        }
+
+
+        .progress-bar {
+            width:
+                87%;
+
+            height:
+                100%;
+
+            border-radius:
+                inherit;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--cy-accent-dark),
+                    var(--cy-accent)
+                );
+        }
+
+
+        .status-grid {
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap:
+                10px;
+
+            margin-top:
+                25px;
+        }
+
+
+        .status-item {
+            padding:
+                14px;
+
+            border:
+                1px solid var(--cy-line);
+
+            border-radius:
+                13px;
+
+            background:
+                color-mix(
+                    in srgb,
+                    var(--cy-panel-2) 75%,
+                    transparent
+                );
+        }
+
+
+        .status-item span {
+            display:
+                block;
+
+            color:
+                var(--cy-muted);
+
+            font-size:
+                10px;
+
+            text-transform:
+                uppercase;
+
+            letter-spacing:
+                .07em;
+        }
+
+
+        .status-item strong {
+            display:
+                block;
+
+            margin-top:
+                7px;
+
+            color:
+                var(--cy-heading);
+
+            font-size:
+                15px;
+        }
+
+
+        /* =================================================
+           SECTIONS
+           ================================================= */
+
+        .landing-section {
+            padding:
+                120px 0;
+        }
+
+
+        .section-heading {
+            max-width:
+                700px;
+
+            margin-bottom:
+                55px;
+        }
+
+
+        .section-heading .eyebrow {
+            margin-bottom:
+                17px;
+        }
+
+
+        .section-heading h2 {
+            color:
+                var(--cy-heading);
+
+            font-size:
+                clamp(
+                    34px,
+                    5vw,
+                    57px
+                );
+
+            line-height:
+                1;
+
+            letter-spacing:
+                -.055em;
+        }
+
+
+        .section-heading p {
+            margin-top:
+                18px;
+
+            color:
+                var(--cy-muted);
+
+            font-size:
+                15px;
+
+            line-height:
+                1.75;
+        }
+
+
+        /* =================================================
+           FEATURE GRID
+           ================================================= */
+
+        .feature-grid {
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap:
+                15px;
+        }
+
+
+        .feature-card {
+            min-height:
+                280px;
+
+            padding:
+                27px;
+
+            border:
+                1px solid var(--cy-line);
+
+            border-radius:
+                20px;
+
+            background:
+                var(--cy-card);
+
+            transition:
+                transform .25s ease,
+                border-color .25s ease,
+                box-shadow .25s ease;
+        }
+
+
+        .feature-card:hover {
+            transform:
+                translateY(-6px);
+
+            border-color:
+                rgba(155,216,77,.28);
+
+            box-shadow:
+                var(--cy-glow);
+        }
+
+
+        .feature-icon {
+            width:
+                48px;
+
+            height:
+                48px;
+
+            display:
+                grid;
+
+            place-items:
+                center;
+
+            border-radius:
+                14px;
+
+            background:
+                color-mix(
+                    in srgb,
+                    var(--cy-accent) 14%,
+                    transparent
+                );
+
+            color:
+                var(--cy-accent);
+
+            font-size:
+                20px;
+        }
+
+
+        .feature-card h3 {
+            margin-top:
+                28px;
+
+            color:
+                var(--cy-heading);
+
+            font-size:
+                20px;
+
+            letter-spacing:
+                -.03em;
+        }
+
+
+        .feature-card p {
+            margin-top:
+                11px;
+
+            color:
+                var(--cy-muted);
+
+            font-size:
+                13px;
+
+            line-height:
+                1.75;
+        }
+
+
+        /* =================================================
+           WORKFLOW
+           ================================================= */
+
+        .workflow {
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap:
+                12px;
+        }
+
+
+        .workflow-step {
+            padding:
+                25px;
+
+            border-top:
+                1px solid var(--cy-line);
+
+            position:
+                relative;
+        }
+
+
+        .workflow-number {
+            color:
+                var(--cy-accent);
+
+            font-size:
+                12px;
+
+            font-weight:
+                900;
+
+            letter-spacing:
+                .12em;
+        }
+
+
+        .workflow-step h3 {
+            margin-top:
+                22px;
+
+            color:
+                var(--cy-heading);
+
+            font-size:
+                18px;
+        }
+
+
+        .workflow-step p {
+            margin-top:
+                10px;
+
+            color:
+                var(--cy-muted);
+
+            font-size:
+                13px;
+
+            line-height:
+                1.7;
+        }
+
+
+        /* =================================================
+           PREDICTION STUDIO
+           ================================================= */
+
+        .studio {
+            display:
+                grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap:
+                20px;
+
+            padding:
+                28px;
+
+            border:
+                1px solid var(--cy-line);
+
+            border-radius:
+                25px;
+
+            background:
+                var(--cy-card);
+
+            box-shadow:
+                var(--cy-shadow);
+        }
+
+
+        .studio-panel {
+            padding:
+                25px;
+
+            border:
+                1px solid var(--cy-line);
+
+            border-radius:
+                18px;
+
+            background:
+                var(--cy-panel-2);
+        }
+
+
+        .studio-panel h3 {
+            color:
+                var(--cy-heading);
+
+            font-size:
+                18px;
+        }
+
+
+        .studio-panel p {
+            margin-top:
+                8px;
+
+            color:
+                var(--cy-muted);
+
+            font-size:
+                13px;
+
+            line-height:
+                1.65;
+        }
+
+
+        .studio-field {
+            margin-top:
+                22px;
+        }
+
+
+        .studio-field-label {
+            display:
+                flex;
+
+            justify-content:
+                space-between;
+
+            margin-bottom:
+                9px;
+
+            color:
+                var(--cy-muted);
+
+            font-size:
+                11px;
+
+            font-weight:
+                700;
+        }
+
+
+        .studio-field-track {
+            height:
+                7px;
+
+            border-radius:
+                999px;
+
+            background:
+                var(--cy-panel-3);
+
+            overflow:
+                hidden;
+        }
+
+
+        .studio-field-value {
+            height:
+                100%;
+
+            border-radius:
+                inherit;
+
+            background:
+                var(--cy-accent);
+        }
+
+
+        .prediction-result {
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            justify-content:
+                center;
+
+            min-height:
+                100%;
+        }
+
+
+        .prediction-result-label {
+            color:
+                var(--cy-muted);
+
+            font-size:
+                11px;
+
+            font-weight:
+                800;
+
+            letter-spacing:
+                .1em;
+
+            text-transform:
+                uppercase;
+        }
+
+
+        .prediction-result-value {
+            margin-top:
+                13px;
+
+            color:
+                var(--cy-heading);
+
+            font-size:
+                58px;
+
+            font-weight:
+                900;
+
+            line-height:
+                1;
+
+            letter-spacing:
+                -.07em;
+        }
+
+
+        .prediction-result-value span {
+            color:
+                var(--cy-accent);
+
+            font-size:
+                19px;
+
+            letter-spacing:
+                0;
+        }
+
+
+        .prediction-risk {
+            display:
+                inline-flex;
+
+            width:
+                fit-content;
+
+            margin-top:
+                20px;
+
+            padding:
+                7px 10px;
+
+            border-radius:
+                999px;
+
+            background:
+                rgba(104,211,145,.12);
+
+            color:
+                var(--cy-success);
+
+            font-size:
+                11px;
+
+            font-weight:
+                800;
+        }
+
+
+        /* =================================================
+           CTA
+           ================================================= */
+
+        .cta {
+            padding-bottom:
+                120px;
+        }
+
+
+        .cta-box {
+            position:
+                relative;
+
+            padding:
+                75px 45px;
+
+            text-align:
+                center;
+
+            overflow:
+                hidden;
+
+            border:
+                1px solid var(--cy-line);
+
+            border-radius:
+                28px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--cy-panel),
+                    var(--cy-panel-2)
+                );
+        }
+
+
+        .cta-box::before {
+            content:
+                "";
+
+            position:
+                absolute;
+
+            width:
+                360px;
+
+            height:
+                360px;
+
+            top:
+                -210px;
+
+            left:
+                50%;
+
+            transform:
+                translateX(-50%);
+
+            border-radius:
+                50%;
+
+            background:
+                rgba(155,216,77,.12);
+
+            filter:
+                blur(10px);
+        }
+
+
+        .cta-box > * {
+            position:
+                relative;
+        }
+
+
+        .cta-box h2 {
+            color:
+                var(--cy-heading);
+
+            font-size:
+                clamp(
+                    35px,
+                    5vw,
+                    57px
+                );
+
+            letter-spacing:
+                -.055em;
+        }
+
+
+        .cta-box p {
+            max-width:
+                570px;
+
+            margin:
+                17px auto 30px;
+
+            color:
+                var(--cy-muted);
+
+            line-height:
+                1.75;
+
+            font-size:
+                14px;
+        }
+
+
+        /* =================================================
+           FOOTER
+           ================================================= */
+
+        .landing-footer {
+            padding:
+                35px 0
+                50px;
+
+            border-top:
+                1px solid var(--cy-line);
+        }
+
+
+        .footer-inner {
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            gap:
+                20px;
+        }
+
+
+        .footer-copy {
+            color:
+                var(--cy-muted);
+
+            font-size:
+                12px;
+        }
+
+
+        .footer-brand {
+            color:
+                var(--cy-heading);
+
+            font-size:
+                13px;
+
+            font-weight:
+                800;
+        }
+
+
+        .footer-brand span {
+            color:
+                var(--cy-accent);
+        }
+
+
+        /* =================================================
+           RESPONSIVE
+           ================================================= */
+
+        @media (max-width: 900px) {
+
+            .landing-nav-links {
+                display:
+                    none;
+            }
+
+
+            .hero {
+                min-height:
+                    auto;
+
+                padding-top:
+                    150px;
+            }
+
+
+            .hero-grid {
+                grid-template-columns:
+                    1fr;
+
+                gap:
+                    45px;
+            }
+
+
+            .hero-card {
+                max-width:
+                    520px;
+            }
+
+
+            .feature-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+
+            .workflow {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+        }
+
+
+        @media (max-width: 680px) {
+
+            .landing-container {
+                width:
+                    min(
+                        calc(100% - 28px),
+                        1180px
+                    );
+            }
+
+
+            .landing-nav {
+                width:
+                    calc(100% - 20px);
+
+                top:
+                    10px;
+            }
+
+
+            .landing-login {
+                display:
+                    none;
+            }
+
+
+            .landing-register {
+                padding:
+                    10px 13px;
+            }
+
+
+            .hero {
+                padding:
+                    135px 0
+                    70px;
+            }
+
+
+            .hero h1 {
+                font-size:
+                    clamp(
+                        45px,
+                        14vw,
+                        68px
+                    );
+            }
+
+
+            .hero-description {
+                font-size:
+                    15px;
+            }
+
+
+            .hero-metrics {
+                gap:
+                    25px;
+            }
+
+
+            .feature-grid,
+            .workflow,
+            .studio {
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .landing-section {
+                padding:
+                    80px 0;
+            }
+
+
+            .cta {
+                padding-bottom:
+                    80px;
+            }
+
+
+            .cta-box {
+                padding:
+                    55px 25px;
+            }
+
+
+            .footer-inner {
+                flex-direction:
+                    column;
+
+                align-items:
+                    flex-start;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         NAVIGATION
+         ===================================================== -->
+
+    <nav class="landing-nav">
+
+        <!-- CORRECTED: SIMPLE ROOT LINK -->
+        <a
+            href="/"
+            class="landing-brand"
+        >
+
+            <span class="landing-brand-mark">
+                CY
+            </span>
+
+            <span class="landing-brand-name">
+                CropYield <span>AI</span>
+            </span>
+
+        </a>
+
+
+        <div class="landing-nav-links">
+
+            <a href="#technology">
+                Technology
+            </a>
+
+            <a href="#workflow">
+                Workflow
+            </a>
+
+            <a href="#studio">
+                Prediction Studio
+            </a>
+
+        </div>
+
+
+        <div class="landing-nav-actions">
+
+            <!-- GLOBAL THEME BUTTON -->
+            <button
+                type="button"
+                id="landingThemeToggle"
+                data-theme-toggle
+                class="landing-theme-toggle"
+                aria-label="Switch theme"
+                title="Switch theme"
+            >
+
+                <span
+                    id="landingThemeIcon"
+                    data-theme-icon
+                >
+                    ☀
+                </span>
+
+            </button>
+
+
+            <a
+                href="{{ url_for('auth.login') }}"
+                class="landing-login"
+            >
+                Login
+            </a>
+
+
+            <a
+                href="{{ url_for('auth.register') }}"
+                class="landing-register"
+            >
+                Get Started
+            </a>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- =====================================================
+         HERO
+         ===================================================== -->
+
+    <section class="hero">
+
+        <video
+            class="hero-video"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="metadata"
+        >
+
+            <source
+                src="{{ url_for('static', filename='videos/hero.mp4') }}"
+                type="video/mp4"
+            >
+
+        </video>
+
+
+        <div class="hero-overlay"></div>
+
+        <div class="hero-bottom-fade"></div>
+
+
+        <div class="landing-container">
+
+            <div class="hero-grid">
+
+
+                <!-- HERO CONTENT -->
+
+                <div class="hero-content">
+
+                    <div class="eyebrow">
+
+                        <span class="eyebrow-dot"></span>
+
+                        AI-POWERED AGRICULTURAL INTELLIGENCE
+
+                    </div>
+
+
+                    <h1>
+
+                        Predict the
+                        <span>
+                            future
+                        </span>
+                        of your harvest.
+
+                    </h1>
+
+
+                    <p class="hero-description">
+
+                        CropYield AI transforms crop, soil and
+                        environmental data into intelligent yield
+                        predictions, risk assessments and actionable
+                        agricultural recommendations.
+
+                    </p>
+
+
+                    <div class="hero-actions">
+
+                        <a
+                            href="{{ url_for('auth.register') }}"
+                            class="primary-button"
+                        >
+                            Start Predicting →
+                        </a>
+
+
+                        <a
+                            href="#technology"
+                            class="secondary-button"
+                        >
+                            Explore the Platform
+                        </a>
+
+                    </div>
+
+
+                    <div class="hero-metrics">
+
+                        <div class="metric">
+
+                            <strong>
+                                AI
+                            </strong>
+
+                            <span>
+                                Prediction Engine
+                            </span>
+
+                        </div>
+
+
+                        <div class="metric">
+
+                            <strong>
+                                RF
+                            </strong>
+
+                            <span>
+                                Random Forest Model
+                            </span>
+
+                        </div>
+
+
+                        <div class="metric">
+
+                            <strong>
+                                24/7
+                            </strong>
+
+                            <span>
+                                Agricultural Intelligence
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- AI STATUS CARD -->
+
+                <div class="hero-card">
+
+                    <div class="status-header">
+
+                        <span class="status-label">
+                            MODEL STATUS
+                        </span>
+
+                        <span class="status-online">
+                            LIVE
+                        </span>
+
+                    </div>
+
+
+                    <div class="status-body">
+
+                        <div class="status-value">
+                            87<span>%</span>
+                        </div>
+
+
+                        <div class="status-title">
+                            Current model confidence
+                        </div>
+
+
+                        <div class="progress-track">
+
+                            <div
+                                class="progress-bar"
+                            ></div>
+
+                        </div>
+
+
+                        <div class="status-grid">
+
+                            <div class="status-item">
+
+                                <span>
+                                    Engine
+                                </span>
+
+                                <strong>
+                                    Random Forest
+                                </strong>
+
+                            </div>
+
+
+                            <div class="status-item">
+
+                                <span>
+                                    Inputs
+                                </span>
+
+                                <strong>
+                                    7 Variables
+                                </strong>
+
+                            </div>
+
+
+                            <div class="status-item">
+
+                                <span>
+                                    Output
+                                </span>
+
+                                <strong>
+                                    t/ha
+                                </strong>
+
+                            </div>
+
+
+                            <div class="status-item">
+
+                                <span>
+                                    Analysis
+                                </span>
+
+                                <strong>
+                                    Real-time
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         TECHNOLOGY
+         ===================================================== -->
+
+    <section
+        class="landing-section"
+        id="technology"
+    >
+
+        <div class="landing-container">
+
+            <div class="section-heading">
+
+                <div class="eyebrow">
+                    INTELLIGENCE LAYER
+                </div>
+
+                <h2>
+                    Agriculture powered by data.
+                </h2>
+
+                <p>
+                    CropYield AI combines machine learning,
+                    environmental intelligence and agricultural
+                    analytics to turn complex field information
+                    into practical decisions.
+                </p>
+
+            </div>
+
+
+            <div class="feature-grid">
+
+
+                <article class="feature-card">
+
+                    <div class="feature-icon">
+                        ✦
+                    </div>
+
+                    <h3>
+                        Yield Prediction
+                    </h3>
+
+                    <p>
+                        Estimate expected crop yield using
+                        crop characteristics, soil conditions,
+                        rainfall, temperature and humidity.
+                    </p>
+
+                </article>
+
+
+                <article class="feature-card">
+
+                    <div class="feature-icon">
+                        ◈
+                    </div>
+
+                    <h3>
+                        Risk Intelligence
+                    </h3>
+
+                    <p>
+                        Understand the potential risk surrounding
+                        a prediction and identify environmental
+                        conditions that may affect production.
+                    </p>
+
+                </article>
+
+
+                <article class="feature-card">
+
+                    <div class="feature-icon">
+                        ◌
+                    </div>
+
+                    <h3>
+                        Environmental Analytics
+                    </h3>
+
+                    <p>
+                        Explore relationships between agricultural
+                        variables and understand how environmental
+                        conditions influence crop performance.
+                    </p>
+
+                </article>
+
+
+                <article class="feature-card">
+
+                    <div class="feature-icon">
+                        ⌬
+                    </div>
+
+                    <h3>
+                        Model Intelligence
+                    </h3>
+
+                    <p>
+                        Inspect model performance using statistical
+                        evaluation metrics including R², MAE and RMSE.
+                    </p>
+
+                </article>
+
+
+                <article class="feature-card">
+
+                    <div class="feature-icon">
+                        ▣
+                    </div>
+
+                    <h3>
+                        Prediction History
+                    </h3>
+
+                    <p>
+                        Keep a record of previous predictions and
+                        compare agricultural scenarios over time.
+                    </p>
+
+                </article>
+
+
+                <article class="feature-card">
+
+                    <div class="feature-icon">
+                        ✓
+                    </div>
+
+                    <h3>
+                        Actionable Recommendations
+                    </h3>
+
+                    <p>
+                        Convert prediction results into practical
+                        recommendations designed to support better
+                        agricultural decisions.
+                    </p>
+
+                </article>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         WORKFLOW
+         ===================================================== -->
+
+    <section
+        class="landing-section"
+        id="workflow"
+    >
+
+        <div class="landing-container">
+
+            <div class="section-heading">
+
+                <div class="eyebrow">
+                    SIMPLE WORKFLOW
+                </div>
+
+                <h2>
+                    From field data to intelligent decisions.
+                </h2>
+
+                <p>
+                    The prediction process is designed to make
+                    agricultural machine learning understandable,
+                    fast and practical.
+                </p>
+
+            </div>
+
+
+            <div class="workflow">
+
+
+                <div class="workflow-step">
+
+                    <div class="workflow-number">
+                        01
+                    </div>
+
+                    <h3>
+                        Enter Data
+                    </h3>
+
+                    <p>
+                        Provide crop and environmental
+                        conditions from your field.
+                    </p>
+
+                </div>
+
+
+                <div class="workflow-step">
+
+                    <div class="workflow-number">
+                        02
+                    </div>
+
+                    <h3>
+                        AI Analysis
+                    </h3>
+
+                    <p>
+                        The trained machine learning model
+                        evaluates the supplied variables.
+                    </p>
+
+                </div>
+
+
+                <div class="workflow-step">
+
+                    <div class="workflow-number">
+                        03
+                    </div>
+
+                    <h3>
+                        Generate Prediction
+                    </h3>
+
+                    <p>
+                        CropYield AI estimates the expected
+                        crop yield and prediction range.
+                    </p>
+
+                </div>
+
+
+                <div class="workflow-step">
+
+                    <div class="workflow-number">
+                        04
+                    </div>
+
+                    <h3>
+                        Take Action
+                    </h3>
+
+                    <p>
+                        Use risk indicators and recommendations
+                        to support better decisions.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         PREDICTION STUDIO
+         ===================================================== -->
+
+    <section
+        class="landing-section"
+        id="studio"
+    >
+
+        <div class="landing-container">
+
+            <div class="section-heading">
+
+                <div class="eyebrow">
+                    PREDICTION STUDIO
+                </div>
+
+                <h2>
+                    See the intelligence behind the prediction.
+                </h2>
+
+                <p>
+                    A simplified view of how CropYield AI evaluates
+                    environmental and agricultural variables.
+                </p>
+
+            </div>
+
+
+            <div class="studio">
+
+
+                <div class="studio-panel">
+
+                    <h3>
+                        Field Conditions
+                    </h3>
+
+                    <p>
+                        Example agricultural input profile.
+                    </p>
+
+
+                    <div class="studio-field">
+
+                        <div class="studio-field-label">
+                            <span>Rainfall</span>
+                            <span>78%</span>
+                        </div>
+
+                        <div class="studio-field-track">
+
+                            <div
+                                class="studio-field-value"
+                                style="width:78%"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="studio-field">
+
+                        <div class="studio-field-label">
+                            <span>Soil Quality</span>
+                            <span>84%</span>
+                        </div>
+
+                        <div class="studio-field-track">
+
+                            <div
+                                class="studio-field-value"
+                                style="width:84%"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="studio-field">
+
+                        <div class="studio-field-label">
+                            <span>Humidity</span>
+                            <span>67%</span>
+                        </div>
+
+                        <div class="studio-field-track">
+
+                            <div
+                                class="studio-field-value"
+                                style="width:67%"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="studio-field">
+
+                        <div class="studio-field-label">
+                            <span>Temperature</span>
+                            <span>72%</span>
+                        </div>
+
+                        <div class="studio-field-track">
+
+                            <div
+                                class="studio-field-value"
+                                style="width:72%"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="studio-panel prediction-result">
+
+                    <div class="prediction-result-label">
+                        Estimated Yield
+                    </div>
+
+
+                    <div class="prediction-result-value">
+
+                        4.82
+
+                        <span>
+                            tonnes / hectare
+                        </span>
+
+                    </div>
+
+
+                    <div class="prediction-risk">
+                        ● LOW PREDICTION RISK
+                    </div>
+
+
+                    <p>
+                        The current environmental profile indicates
+                        favorable production conditions. Actual
+                        outcomes may vary based on field conditions,
+                        management practices and data quality.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         CALL TO ACTION
+         ===================================================== -->
+
+    <section class="cta">
+
+        <div class="landing-container">
+
+            <div class="cta-box">
+
+                <h2>
+                    Make your next agricultural
+                    decision data-driven.
+                </h2>
+
+
+                <p>
+                    Start exploring intelligent crop yield prediction,
+                    agricultural analytics and machine learning insights
+                    with CropYield AI.
+                </p>
+
+
+                <a
+                    href="{{ url_for('auth.register') }}"
+                    class="primary-button"
+                >
+                    Create Your Account →
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer class="landing-footer">
+
+        <div class="landing-container">
+
+            <div class="footer-inner">
+
+                <div class="footer-brand">
+                    CropYield <span>AI</span>
+                </div>
+
+
+                <div class="footer-copy">
+
+                    ©
+                    {{ current_year if current_year is defined else 2026 }}
+                    CropYield AI.
+                    Intelligent agriculture through data.
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+
+    <!-- =====================================================
+         LANDING PAGE JAVASCRIPT
+         ===================================================== -->
+
+    <script>
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                /*
+                 * IMPORTANT:
+                 *
+                 * Theme switching is handled exclusively
+                 * by /static/js/theme.js.
+                 *
+                 * There is intentionally NO localStorage
+                 * theme code in this section.
+                 */
+
+
+                /*
+                 * Smooth scrolling for internal links.
+                 */
+                document
+                    .querySelectorAll(
+                        'a[href^="#"]'
+                    )
+                    .forEach(
+                        function (link) {
+
+                            link.addEventListener(
+                                "click",
+                                function (event) {
+
+                                    const targetId =
+                                        this.getAttribute(
+                                            "href"
+                                        );
+
+                                    if (
+                                        !targetId ||
+                                        targetId === "#"
+                                    ) {
+                                        return;
+                                    }
+
+                                    const target =
+                                        document.querySelector(
+                                            targetId
+                                        );
+
+                                    if (!target) {
+                                        return;
+                                    }
+
+                                    event.preventDefault();
+
+                                    target.scrollIntoView({
+                                        behavior: "smooth",
+                                        block: "start"
+                                    });
+
+                                }
+                            );
+
+                        }
+                    );
+
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>
