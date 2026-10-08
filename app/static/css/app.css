@@ -2393,3 +2393,962 @@ html[data-theme="light"] .meter {
         grid-column: 2;
     }
 }
+
+/* =========================================================
+   CROPYIELD AI AUTH THEME CONTROL
+   ========================================================= */
+
+.auth-theme-toggle {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 50;
+
+    width: 46px;
+    height: 46px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid var(--cy-line-strong);
+    border-radius: 50%;
+
+    background: var(--cy-card);
+    color: var(--cy-text);
+
+    box-shadow: var(--cy-shadow);
+
+    cursor: pointer;
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    transition:
+        transform .2s ease,
+        background-color .2s ease,
+        color .2s ease,
+        border-color .2s ease;
+}
+
+.auth-theme-toggle:hover {
+    transform: translateY(-2px);
+    border-color: var(--cy-accent);
+    color: var(--cy-accent);
+}
+
+.auth-theme-toggle span {
+    font-size: 20px;
+    line-height: 1;
+}
+
+/* =========================================================
+   CROPYIELD AI - AUTH + LANDING THEME BRIDGE
+   ========================================================= */
+
+:root {
+    --bg: var(--cy-page);
+    --panel: var(--cy-card);
+    --panel2: var(--cy-panel-2);
+    --line: var(--cy-line);
+    --text: var(--cy-text);
+    --muted: var(--cy-muted);
+    --lime: var(--cy-accent);
+    --lime2: var(--cy-accent-2);
+    --shadow: var(--cy-shadow);
+
+    --hero-bg: var(--cy-page);
+    --hero-overlay:
+        linear-gradient(
+            90deg,
+            rgba(4,19,13,.88) 0%,
+            rgba(6,21,14,.72) 45%,
+            rgba(6,20,14,.35) 100%
+        ),
+        linear-gradient(
+            0deg,
+            rgba(6,20,14,.88) 0%,
+            transparent 60%,
+            rgba(6,20,14,.45) 100%
+        );
+}
+
+html[data-theme="light"] {
+    --bg: var(--cy-page);
+    --panel: var(--cy-card);
+    --panel2: var(--cy-panel-2);
+    --line: var(--cy-line);
+    --text: var(--cy-text);
+    --muted: var(--cy-muted);
+    --lime: var(--cy-accent);
+    --lime2: var(--cy-accent-2);
+    --shadow: var(--cy-shadow);
+
+    --hero-bg: var(--cy-page);
+
+    --hero-overlay:
+        linear-gradient(
+            90deg,
+            rgba(244,247,238,.90) 0%,
+            rgba(244,247,238,.68) 45%,
+            rgba(244,247,238,.28) 100%
+        ),
+        linear-gradient(
+            0deg,
+            rgba(244,247,238,.86) 0%,
+            transparent 60%,
+            rgba(244,247,238,.35) 100%
+        );
+}
+
+/* Auth card */
+.auth-card {
+    background: var(--panel) !important;
+    color: var(--text) !important;
+    border-color: var(--line) !important;
+    box-shadow: var(--shadow) !important;
+}
+
+.auth-card h1,
+.auth-card h2,
+.auth-card h3 {
+    color: var(--cy-heading) !important;
+}
+
+.auth-card > p,
+.auth-foot {
+    color: var(--muted) !important;
+}
+
+.auth-card label {
+    color: var(--muted) !important;
+}
+
+.auth-card input,
+.auth-card select,
+.auth-card textarea {
+    background: var(--cy-input) !important;
+    color: var(--cy-text) !important;
+    border-color: var(--line) !important;
+}
+
+.auth-card input::placeholder {
+    color: var(--cy-muted-2) !important;
+}
+
+.auth-card input:focus {
+    border-color: var(--cy-accent) !important;
+    box-shadow: 0 0 0 3px rgba(155,216,77,.10) !important;
+}
+
+/* Demo information */
+.demo-box {
+    background: var(--cy-panel-2) !important;
+    border-color: var(--line) !important;
+}
+
+.demo-box small {
+    color: var(--muted) !important;
+}
+
+.demo-box b {
+    color: var(--cy-accent) !important;
+}
+
+/* Auth page */
+.auth-page {
+    background: var(--hero-bg) !important;
+    color: var(--text) !important;
+}
+
+/* Video overlay */
+.auth-page .video-overlay {
+    background: var(--hero-overlay) !important;
+}
+
+/* Auth theme button */
+.auth-theme-toggle {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 20;
+
+    width: 46px;
+    height: 46px;
+
+    display: grid;
+    place-items: center;
+
+    border: 1px solid var(--line);
+    border-radius: 50%;
+
+    background: var(--panel);
+    color: var(--text);
+
+    box-shadow: var(--shadow);
+
+    cursor: pointer;
+
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+
+    transition:
+        transform .2s ease,
+        background-color .2s ease,
+        color .2s ease,
+        border-color .2s ease;
+}
+
+.auth-theme-toggle:hover {
+    transform: translateY(-2px);
+    color: var(--cy-accent);
+    border-color: var(--cy-accent);
+}
+
+/* Light mode brand */
+html[data-theme="light"] .auth-brand .brand.light {
+    color: var(--cy-heading);
+}
+
+html[data-theme="light"] .auth-brand .brand.light b {
+    color: var(--cy-accent);
+}
+/* FINAL HERO VIDEO LAYER FIX */
+.landing,
+.auth-page {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+}
+
+.hero-video {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    z-index: 0 !important;
+    display: block !important;
+}
+
+.video-overlay {
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 1 !important;
+    pointer-events: none !important;
+}
+
+.landing-nav,
+.landing-hero,
+.auth-brand,
+.auth-card {
+    position: relative;
+    z-index: 2 !important;
+}
+
+.landing {
+    background: #06140e !important;
+}
+
+.auth-page {
+    background: #06140e !important;
+}
+
+html[data-theme="light"] .landing,
+html[data-theme="light"] .auth-page {
+    background: #f4f7ee !important;
+}
+
+/* CROPYIELD LANDING HERO VIDEO - FINAL */
+.hero {
+    position: relative !important;
+    min-height: 100vh !important;
+    width: 100% !important;
+    overflow: hidden !important;
+    isolation: isolate !important;
+    background: #06140e !important;
+}
+
+.hero-video {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    display: block !important;
+    z-index: -2 !important;
+}
+
+.hero-overlay {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: -1 !important;
+    pointer-events: none !important;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(4,19,13,.82) 0%,
+            rgba(6,21,14,.58) 48%,
+            rgba(6,20,14,.22) 100%
+        ),
+        linear-gradient(
+            0deg,
+            rgba(6,20,14,.78) 0%,
+            transparent 60%,
+            rgba(6,20,14,.25) 100%
+        ) !important;
+}
+
+.hero-bottom-fade {
+    position: absolute !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    height: 180px !important;
+    z-index: 0 !important;
+    pointer-events: none !important;
+    background: linear-gradient(
+        to bottom,
+        transparent,
+        #06140e
+    ) !important;
+}
+
+.hero .landing-container,
+.hero .hero-grid,
+.hero .hero-content,
+.hero nav,
+.hero header {
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+html[data-theme="light"] .hero {
+    background: #f4f7ee !important;
+}
+
+html[data-theme="light"] .hero-overlay {
+    background:
+        linear-gradient(
+            90deg,
+            rgba(244,247,238,.82) 0%,
+            rgba(244,247,238,.55) 48%,
+            rgba(244,247,238,.18) 100%
+        ),
+        linear-gradient(
+            0deg,
+            rgba(244,247,238,.72) 0%,
+            transparent 60%,
+            rgba(244,247,238,.20) 100%
+        ) !important;
+}
+
+html[data-theme="light"] .hero-bottom-fade {
+    background: linear-gradient(
+        to bottom,
+        transparent,
+        #f4f7ee
+    ) !important;
+}
+
+html[data-theme="light"] .hero-video {
+    filter: saturate(.9) brightness(1.05) !important;
+}
+
+/* CROPYIELD HERO VIDEO - STACKING FIX */
+.hero {
+    position: relative !important;
+    min-height: 100vh !important;
+    width: 100% !important;
+    overflow: hidden !important;
+    isolation: isolate !important;
+    background: transparent !important;
+}
+
+.hero-video {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    display: block !important;
+    z-index: 0 !important;
+}
+
+.hero-overlay {
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 1 !important;
+    pointer-events: none !important;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(4,19,13,.78) 0%,
+            rgba(6,21,14,.48) 50%,
+            rgba(6,20,14,.18) 100%
+        ),
+        linear-gradient(
+            0deg,
+            rgba(6,20,14,.70) 0%,
+            transparent 65%
+        ) !important;
+}
+
+.hero-bottom-fade {
+    position: absolute !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    height: 180px !important;
+    z-index: 1 !important;
+    pointer-events: none !important;
+    background: linear-gradient(
+        to bottom,
+        transparent,
+        #06140e
+    ) !important;
+}
+
+.hero .landing-container,
+.hero .hero-grid,
+.hero .hero-content {
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+
+/* CROPYIELD HERO - DEFINITIVE VIDEO OVERRIDE */
+section.hero {
+    position: relative !important;
+    min-height: 100vh !important;
+    overflow: hidden !important;
+    background: #06140e !important;
+    isolation: isolate !important;
+}
+
+section.hero > video.hero-video {
+    position: absolute !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 100% !important;
+    min-height: 100% !important;
+    object-fit: cover !important;
+    object-position: center center !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 0 !important;
+}
+
+section.hero > .hero-overlay {
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 1 !important;
+    pointer-events: none !important;
+}
+
+section.hero > .hero-bottom-fade {
+    position: absolute !important;
+    inset: auto 0 0 0 !important;
+    z-index: 1 !important;
+    pointer-events: none !important;
+}
+
+section.hero > .landing-container {
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+
+/* VIDEO VISIBILITY TEST */
+section.hero > video.hero-video {
+    z-index: 999 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+section.hero > .hero-overlay,
+section.hero > .hero-bottom-fade,
+section.hero > .landing-container {
+    z-index: 1 !important;
+}
+
+
+/* FINAL STATIC HERO IMAGE */
+section.hero {
+    position: relative !important;
+    min-height: 100vh !important;
+    overflow: hidden !important;
+    background: #06140e !important;
+}
+
+section.hero > img.hero-video {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 0 !important;
+}
+
+section.hero > .hero-overlay {
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 1 !important;
+    pointer-events: none !important;
+}
+
+section.hero > .hero-bottom-fade {
+    position: absolute !important;
+    inset: auto 0 0 0 !important;
+    z-index: 1 !important;
+    pointer-events: none !important;
+}
+
+section.hero > .landing-container {
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+/* HERO VISIBILITY RESET */
+.hero {
+    display: block !important;
+    position: relative !important;
+    width: 100% !important;
+    min-height: 100vh !important;
+    height: 100vh !important;
+    overflow: hidden !important;
+    background: #06140e !important;
+}
+
+.hero .hero-video {
+    position: absolute !important;
+    display: block !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: none !important;
+    object-fit: cover !important;
+    inset: 0 !important;
+    z-index: 1 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.hero .hero-overlay {
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 2 !important;
+}
+
+.hero .hero-bottom-fade {
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 2 !important;
+}
+
+.hero .landing-container {
+    position: relative !important;
+    z-index: 3 !important;
+}
+
+
+/* =========================================================
+   CROPYIELD AI - FINAL HERO
+   ========================================================= */
+
+.hero {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100vh !important;
+    min-height: 700px !important;
+    overflow: hidden !important;
+    background: #06140e !important;
+    isolation: isolate !important;
+}
+
+.hero > .hero-video {
+    position: absolute !important;
+    inset: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 100% !important;
+    min-height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: cover !important;
+    object-position: center center !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    z-index: -1 !important;
+}
+
+.hero > .hero-overlay {
+    position: absolute !important;
+    inset: 0 !important;
+    display: block !important;
+    background: linear-gradient(
+        90deg,
+        rgba(2, 15, 8, 0.88) 0%,
+        rgba(2, 15, 8, 0.58) 45%,
+        rgba(2, 15, 8, 0.25) 100%
+    ) !important;
+    z-index: 0 !important;
+}
+
+.hero > .hero-bottom-fade {
+    position: absolute !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    height: 180px !important;
+    z-index: 0 !important;
+    pointer-events: none !important;
+}
+
+.hero > .landing-container {
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+/* =========================================================
+   HERO THEME OVERLAY
+   ========================================================= */
+
+.hero > .hero-overlay {
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 0 !important;
+    pointer-events: none !important;
+    background: linear-gradient(
+        90deg,
+        rgba(3, 15, 9, 0.88) 0%,
+        rgba(3, 15, 9, 0.68) 45%,
+        rgba(3, 15, 9, 0.38) 100%
+    ) !important;
+}
+
+.hero > .landing-container {
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+html[data-theme="light"] .hero > .hero-overlay {
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.92) 0%,
+        rgba(255, 255, 255, 0.78) 45%,
+        rgba(255, 255, 255, 0.48) 100%
+    ) !important;
+}
+
+html[data-theme="dark"] .hero > .hero-overlay {
+    background: linear-gradient(
+        90deg,
+        rgba(3, 15, 9, 0.88) 0%,
+        rgba(3, 15, 9, 0.68) 45%,
+        rgba(3, 15, 9, 0.38) 100%
+    ) !important;
+}
+
+
+/* =========================================================
+   FINAL THEME-AWARE HERO BACKGROUND
+   ========================================================= */
+
+html[data-theme="dark"] .hero {
+    background-image:
+        linear-gradient(
+            90deg,
+            rgba(2, 12, 7, 0.90) 0%,
+            rgba(2, 12, 7, 0.70) 45%,
+            rgba(2, 12, 7, 0.40) 100%
+        ),
+        url("/static/images/hero.jpg") !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+
+html[data-theme="light"] .hero {
+    background-image:
+        linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.92) 0%,
+            rgba(255, 255, 255, 0.78) 45%,
+            rgba(255, 255, 255, 0.48) 100%
+        ),
+        url("/static/images/hero.jpg") !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+
+/* Keep hero content above everything */
+.hero > .landing-container {
+    position: relative !important;
+    z-index: 10 !important;
+}
+
+.hero > .hero-overlay,
+.hero > .hero-bottom-fade {
+    pointer-events: none !important;
+}
+
+
+/* =========================================================
+   HERO THEME OVERLAY - DIRECT HTML LAYER
+   ========================================================= */
+
+.hero {
+    position: relative !important;
+    isolation: isolate !important;
+}
+
+.hero-theme-overlay {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: block !important;
+    pointer-events: none !important;
+    z-index: 1 !important;
+    background: rgba(0, 0, 0, 0.70) !important;
+}
+
+.hero > .landing-container {
+    position: relative !important;
+    z-index: 5 !important;
+}
+
+html[data-theme="light"] .hero-theme-overlay {
+    background: rgba(255, 255, 255, 0.70) !important;
+}
+
+html[data-theme="dark"] .hero-theme-overlay {
+    background: rgba(0, 0, 0, 0.70) !important;
+}
+
+
+/* =========================================================
+   FINAL HERO OVERLAY - THEME CLASS BASED
+   ========================================================= */
+
+.hero {
+    position: relative !important;
+    isolation: isolate !important;
+}
+
+.hero-theme-overlay {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: block !important;
+    pointer-events: none !important;
+    z-index: 2 !important;
+}
+
+.theme-dark .hero-theme-overlay {
+    background: rgba(0, 0, 0, 0.72) !important;
+}
+
+.theme-light .hero-theme-overlay {
+    background: rgba(255, 255, 255, 0.72) !important;
+}
+
+.hero > .landing-container {
+    position: relative !important;
+    z-index: 10 !important;
+}
+
+
+/* FINAL HERO THEME TINT */
+html.theme-dark .hero {
+    box-shadow: inset 0 0 0 100vmax rgba(0, 0, 0, 0.68) !important;
+}
+
+html.theme-light .hero {
+    box-shadow: inset 0 0 0 100vmax rgba(255, 255, 255, 0.68) !important;
+}
+
+.hero > .landing-container {
+    position: relative !important;
+    z-index: 10 !important;
+}
+
+
+/* FINAL HERO BLUR */
+.hero {
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.hero::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: -20px !important;
+    background: inherit !important;
+    filter: blur(5px) !important;
+    transform: scale(1.04) !important;
+    z-index: 0 !important;
+}
+
+.hero > .landing-container,
+.hero > nav,
+.hero > .hero-theme-overlay,
+.hero > .hero-bottom-fade {
+    position: relative !important;
+    z-index: 10 !important;
+}
+
+/* HERO FINAL BLURRED BACKGROUND */
+.hero::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: -30px !important;
+    background-image: url("/static/images/hero.jpg") !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    filter: blur(8px) !important;
+    transform: scale(1.05) !important;
+    z-index: 0 !important;
+}
+
+.hero > .landing-container {
+    position: relative !important;
+    z-index: 20 !important;
+}
+
+/* CROPYIELD AI: THEME-SPECIFIC HERO IMAGES */
+html.theme-dark .hero,
+html[data-theme="dark"] .hero {
+    background-image: url("/static/images/hero-dark.jpg") !important;
+    background-size: cover !important;
+    background-position: center !important;
+}
+
+html.theme-light .hero,
+html[data-theme="light"] .hero {
+    background-image: url("/static/images/hero-light.jpg") !important;
+    background-size: cover !important;
+    background-position: center !important;
+}
+
+/* CROPYIELD AI: LIGHT-MODE HERO TEXT CONTRAST */
+html.theme-light .hero .landing-container,
+html[data-theme="light"] .hero .landing-container {
+    color: #ffffff !important;
+}
+
+html.theme-light .hero h1,
+html.theme-light .hero h2,
+html.theme-light .hero h3,
+html.theme-light .hero p,
+html.theme-light .hero .hero-subtitle,
+html[data-theme="light"] .hero h1,
+html[data-theme="light"] .hero h2,
+html[data-theme="light"] .hero h3,
+html[data-theme="light"] .hero p,
+html[data-theme="light"] .hero .hero-subtitle {
+    color: #ffffff !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.75) !important;
+}
+
+html.theme-light .hero a:not(.btn),
+html[data-theme="light"] .hero a:not(.btn) {
+    color: #ffffff !important;
+}
+
+html.theme-light .hero .btn,
+html[data-theme="light"] .hero .btn {
+    text-shadow: none !important;
+}
+
+/* CROPYIELD AI: GOLDEN YELLOW HERO TEXT IN LIGHT MODE */
+html.theme-light .hero h1,
+html.theme-light .hero h2,
+html.theme-light .hero h3,
+html.theme-light .hero p,
+html.theme-light .hero .hero-subtitle,
+html[data-theme="light"] .hero h1,
+html[data-theme="light"] .hero h2,
+html[data-theme="light"] .hero h3,
+html[data-theme="light"] .hero p,
+html[data-theme="light"] .hero .hero-subtitle {
+    color: #FFD54F !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85) !important;
+}
+
+html.theme-light .hero a:not(.btn),
+html[data-theme="light"] .hero a:not(.btn) {
+    color: #FFE082 !important;
+}
+
+/* FIX: GOLDEN HERO TEXT IN LIGHT MODE */
+html[data-theme="light"] .hero .hero-content h1,
+html.theme-light .hero .hero-content h1 {
+    color: #FFE082 !important;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9) !important;
+}
+
+html[data-theme="light"] .hero .hero-content h1 span,
+html.theme-light .hero .hero-content h1 span {
+    color: #FFC107 !important;
+}
+
+html[data-theme="light"] .hero .hero-content .hero-description,
+html[data-theme="light"] .hero .hero-content .eyebrow,
+html[data-theme="light"] .hero .hero-content .hero-metrics,
+html[data-theme="light"] .hero .hero-content .hero-metrics strong,
+html[data-theme="light"] .hero .hero-content .hero-metrics span,
+html[data-theme="light"] .hero .hero-content .hero-actions .secondary-button,
+html.theme-light .hero .hero-content .hero-description,
+html.theme-light .hero .hero-content .eyebrow,
+html.theme-light .hero .hero-content .hero-metrics,
+html.theme-light .hero .hero-content .hero-metrics strong,
+html.theme-light .hero .hero-content .hero-metrics span,
+html.theme-light .hero .hero-content .hero-actions .secondary-button {
+    color: #FFE8A3 !important;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9) !important;
+}
+
+html[data-theme="light"] .hero .hero-content .eyebrow,
+html.theme-light .hero .hero-content .eyebrow {
+    color: #FFD54F !important;
+}
+
+
+/* CropYield AI: light-mode landing hero colors */
+html[data-theme="light"] .hero .hero-content h1 {
+    color: #fff4c2 !important;
+}
+
+html[data-theme="light"] .hero .hero-content h1 span {
+    color: #ffd166 !important;
+}
+
+html[data-theme="light"] .hero .hero-content .hero-description {
+    color: #fff8e6 !important;
+}
+
+html[data-theme="light"] .hero .hero-content .eyebrow {
+    color: #ffe8a3 !important;
+}

@@ -1,1 +1,134 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Create account | CropYield AI</title><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="{{url_for('static',filename='css/app.css')}}"></head><body><div class="auth-page"><video class="hero-video" autoplay muted loop playsinline poster="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=2200&q=85"><source src="https://assets.mixkit.co/videos/preview/mixkit-wheat-field-under-a-blue-sky-4447-large.mp4" type="video/mp4"></video><div class="video-overlay"></div><div class="auth-brand"><a class="brand light" href="/"><span class="brand-mark">CY</span>CropYield <b>AI</b></a></div><div class="auth-card"><div class="eyebrow">JOIN THE PLATFORM</div><h1>Create your account.</h1><p>Build a personal agricultural intelligence workspace.</p>{% with messages=get_flashed_messages(with_categories=true) %}{% for cat,msg in messages %}<div class="flash {{cat}}">{{msg}}</div>{% endfor %}{% endwith %}<form method="post"><input type="hidden" name="csrf_token" value="{{csrf_token()}}"><label>Full name<input name="name" required placeholder="Your name"></label><label>Email address<input name="email" type="email" required placeholder="you@example.com"></label><label>Password<input name="password" type="password" minlength="8" required placeholder="At least 8 characters"></label><button class="lime-btn full">Create workspace</button></form><div class="auth-foot">Already registered? <a href="{{url_for('auth.login')}}">Sign in</a></div></div></div></body></html>
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Create account | CropYield AI</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+
+    <script>
+        (function () {
+            const theme = localStorage.getItem("cropyield-theme") || "dark";
+
+            document.documentElement.setAttribute("data-theme", theme);
+            document.documentElement.classList.add("theme-" + theme);
+            document.documentElement.style.colorScheme = theme;
+        })();
+    </script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+</head>
+
+<body>
+
+<div class="auth-page">
+
+    <video
+        class="hero-video"
+        autoplay
+        muted
+        loop
+        playsinline
+        poster="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=2200&q=85"
+    >
+        <source
+            src="https://assets.mixkit.co/videos/preview/mixkit-wheat-field-under-a-blue-sky-4447-large.mp4"
+            type="video/mp4"
+        >
+    </video>
+
+    <div class="video-overlay"></div>
+
+    <div class="auth-brand">
+        <a class="brand light" href="/">
+            <span class="brand-mark">CY</span>
+            CropYield <b>AI</b>
+        </a>
+    </div>
+
+    <button
+        type="button"
+        class="auth-theme-toggle"
+        data-theme-toggle
+        aria-label="Switch theme"
+        title="Switch theme"
+    >
+        <span data-theme-icon>☀</span>
+    </button>
+
+    <div class="auth-card">
+
+        <div class="eyebrow">JOIN THE PLATFORM</div>
+
+        <h1>Create your account.</h1>
+
+        <p>
+            Build a personal agricultural intelligence workspace.
+        </p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for cat, msg in messages %}
+                <div class="flash {{ cat }}">{{ msg }}</div>
+            {% endfor %}
+        {% endwith %}
+
+        <form method="post">
+
+            <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}"
+            >
+
+            <label>
+                Full name
+                <input
+                    name="name"
+                    required
+                    placeholder="Your name"
+                >
+            </label>
+
+            <label>
+                Email address
+                <input
+                    name="email"
+                    type="email"
+                    required
+                    placeholder="you@example.com"
+                >
+            </label>
+
+            <label>
+                Password
+                <input
+                    name="password"
+                    type="password"
+                    minlength="8"
+                    required
+                    placeholder="At least 8 characters"
+                >
+            </label>
+
+            <button class="lime-btn full">
+                Create workspace
+            </button>
+
+        </form>
+
+        <div class="auth-foot">
+            Already registered?
+            <a href="{{ url_for('auth.login') }}">
+                Sign in
+            </a>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 
 <head>
@@ -1910,7 +1910,7 @@
                     id="landingThemeIcon"
                     data-theme-icon
                 >
-                    ☀
+                    &#9728;
                 </span>
 
             </button>
@@ -1941,26 +1941,12 @@
          HERO
          ===================================================== -->
 
-    <section class="hero">
+    <section class="hero" style="background-image:url('/static/images/hero.jpg') !important;background-size:cover !important;background-position:center !important;background-repeat:no-repeat !important;min-height:720px !important;">
 
-        <video
-            class="hero-video"
-            autoplay
-            muted
-            loop
-            playsinline
-            preload="metadata"
-        >
-
-            <source
-                src="{{ url_for('static', filename='videos/hero.mp4') }}"
-                type="video/mp4"
-            >
-
-        </video>
+        <img class="hero-video" src="{{ url_for('static', filename='images/hero.jpg') }}" alt="CropYield AI agricultural field">
 
 
-        <div class="hero-overlay"></div>
+        <div class="hero-theme-overlay"></div>
 
         <div class="hero-bottom-fade"></div>
 
@@ -2010,7 +1996,7 @@
                             href="{{ url_for('auth.register') }}"
                             class="primary-button"
                         >
-                            Start Predicting →
+                            Start Predicting &#8594;
                         </a>
 
 
@@ -2212,7 +2198,7 @@
                 <article class="feature-card">
 
                     <div class="feature-icon">
-                        ✦
+                        &#10022;
                     </div>
 
                     <h3>
@@ -2231,7 +2217,7 @@
                 <article class="feature-card">
 
                     <div class="feature-icon">
-                        ◈
+                        &#9672;
                     </div>
 
                     <h3>
@@ -2250,7 +2236,7 @@
                 <article class="feature-card">
 
                     <div class="feature-icon">
-                        ◌
+                        &#9675;
                     </div>
 
                     <h3>
@@ -2269,7 +2255,7 @@
                 <article class="feature-card">
 
                     <div class="feature-icon">
-                        ⌬
+                        &#9004;
                     </div>
 
                     <h3>
@@ -2278,7 +2264,7 @@
 
                     <p>
                         Inspect model performance using statistical
-                        evaluation metrics including R², MAE and RMSE.
+                        evaluation metrics including R&#178;, MAE and RMSE.
                     </p>
 
                 </article>
@@ -2287,7 +2273,7 @@
                 <article class="feature-card">
 
                     <div class="feature-icon">
-                        ▣
+                        &#9635;
                     </div>
 
                     <h3>
@@ -2305,7 +2291,7 @@
                 <article class="feature-card">
 
                     <div class="feature-icon">
-                        ✓
+                        &#10003;
                     </div>
 
                     <h3>
@@ -2581,7 +2567,7 @@
 
 
                     <div class="prediction-risk">
-                        ● LOW PREDICTION RISK
+                        &#9679; LOW PREDICTION RISK
                     </div>
 
 
@@ -2629,7 +2615,7 @@
                     href="{{ url_for('auth.register') }}"
                     class="primary-button"
                 >
-                    Create Your Account →
+                    Create Your Account &#8594;
                 </a>
 
             </div>
@@ -2657,7 +2643,7 @@
 
                 <div class="footer-copy">
 
-                    ©
+                    &copy;
                     {{ current_year if current_year is defined else 2026 }}
                     CropYield AI.
                     Intelligent agriculture through data.
@@ -2749,3 +2735,11 @@
 </body>
 
 </html>
+
+
+
+
+
+
+
+
