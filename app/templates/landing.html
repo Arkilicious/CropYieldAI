@@ -1846,7 +1846,77 @@
 
         }
 
-    </style>
+    
+/* Mobile navigation menu */
+.landing-menu-toggle {
+    display: none;
+    width: 42px;
+    height: 42px;
+    padding: 10px;
+    border: 1px solid var(--cy-line);
+    border-radius: 12px;
+    background: var(--cy-panel);
+    cursor: pointer;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1002;
+}
+
+.landing-menu-toggle span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--cy-heading);
+}
+
+@media (max-width: 900px) {
+    .landing-nav {
+        flex-wrap: wrap;
+    }
+
+    .landing-menu-toggle {
+        display: flex;
+        margin-left: auto;
+    }
+
+    .landing-nav-links,
+    .landing-nav-links.is-open {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        width: 100%;
+        box-sizing: border-box;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        padding: 8px 16px;
+        border: 1px solid var(--cy-line);
+        border-radius: 16px;
+        background: var(--cy-page);
+        box-shadow: var(--cy-shadow);
+    }
+
+    .landing-nav-links {
+        display: none;
+    }
+
+    .landing-nav-links.is-open {
+        display: flex;
+    }
+
+    .landing-nav-links a {
+        display: block;
+        padding: 13px 4px;
+    }
+
+    .landing-nav-actions {
+        flex-shrink: 0;
+    }
+}</style>
 
 </head>
 
@@ -1877,7 +1947,13 @@
         </a>
 
 
-        <div class="landing-nav-links">
+        <button type="button" class="landing-menu-toggle"
+                id="landingMenuToggle" aria-label="Open navigation menu"
+                aria-expanded="false" aria-controls="landingNavLinks">
+            <span></span><span></span><span></span>
+        </button>
+
+        <div class="landing-nav-links" id="landingNavLinks">
 
             <a href="#technology">
                 Technology
@@ -2732,9 +2808,45 @@
 
     </script>
 
+<script>
+(function () {
+    const toggle = document.getElementById("landingMenuToggle");
+    const menu = document.getElementById("landingNavLinks");
+
+    if (!toggle || !menu) return;
+
+    function closeMenu() {
+        menu.classList.remove("is-open");
+        toggle.setAttribute("aria-expanded", "false");
+        toggle.setAttribute("aria-label", "Open navigation menu");
+    }
+
+    toggle.addEventListener("click", function () {
+        const isOpen = menu.classList.toggle("is-open");
+        toggle.setAttribute("aria-expanded", String(isOpen));
+        toggle.setAttribute(
+            "aria-label",
+            isOpen ? "Close navigation menu" : "Open navigation menu"
+        );
+    });
+
+    menu.querySelectorAll("a").forEach(function (link) {
+        link.addEventListener("click", closeMenu);
+    });
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") closeMenu();
+    });
+
+    window.addEventListener("resize", function () {
+        if (window.innerWidth > 900) closeMenu();
+    });
+})();
+</script>
 </body>
 
 </html>
+
 
 
 
