@@ -4,3 +4,6 @@ __pycache__/
 .env
 instance/*.db
 .pytest_cache/
+
+# User-uploaded profile photos
+app/static/uploads/profiles/

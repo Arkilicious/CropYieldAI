@@ -1,1 +1,84 @@
-{% extends 'base.html' %}{% block title %}Profile | CropYield AI{% endblock %}{% block crumb %}Profile{% endblock %}{% block content %}<div class="page-head"><div><div class="eyebrow">ACCOUNT SETTINGS</div><h1>Your profile.</h1><p>Keep your account identity current.</p></div></div><section class="panel profile-card"><div class="profile-big"><div class="avatar large">{{current_user.name[:1]|upper}}</div><div><h2>{{current_user.name}}</h2><span>{{current_user.email}} · {{current_user.role|title}}</span></div></div><form method="post"><input type="hidden" name="csrf_token" value="{{csrf_token()}}"><label>Display name<input name="name" value="{{current_user.name}}" required></label><button class="lime-btn">Save changes</button></form></section>{% endblock %}
+﻿{% extends 'base.html' %}
+{% block title %}Profile Settings | CropYield AI{% endblock %}
+{% block crumb %}Profile Settings{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <div>
+        <div class="eyebrow">ACCOUNT SETTINGS</div>
+        <h1>Your profile.</h1>
+        <p>Manage your personal information, profile photo, and password.</p>
+    </div>
+</div>
+
+<section class="panel profile-card" style="padding:24px;max-width:900px">
+    <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:24px">
+        {% if current_user.profile_photo %}
+            <img src="{{ url_for('static', filename=current_user.profile_photo) }}"
+                 alt="Profile photo"
+                 style="width:92px;height:92px;object-fit:cover;border-radius:50%;border:3px solid var(--line)">
+        {% else %}
+            <div class="avatar large"
+                 style="width:92px;height:92px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:32px">
+                {{ current_user.name[:1]|upper }}
+            </div>
+        {% endif %}
+        <div>
+            <h2 style="margin:0 0 6px">{{ current_user.name }}</h2>
+            <div>{{ current_user.email }}</div>
+            <span class="role-badge">{{ current_user.role|title }}</span>
+            <p style="margin:8px 0 0;color:var(--muted,#6b7280)">
+                Member since {{ current_user.created_at.strftime('%d %b %Y') }}
+            </p>
+        </div>
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <h3>Personal information</h3>
+        <div class="profile-fields"
+             style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:16px">
+            <label>Full name
+                <input name="name" maxlength="120" value="{{ current_user.name }}" required>
+            </label>
+            <label>Email address
+                <input name="email" type="email" maxlength="160" value="{{ current_user.email }}" required>
+            </label>
+            <label>Phone number
+                <input name="phone" type="tel" maxlength="40" value="{{ current_user.phone or '' }}" placeholder="Your phone number">
+            </label>
+            <label>Location
+                <input name="location" maxlength="160" value="{{ current_user.location or '' }}" placeholder="Town, state, country">
+            </label>
+        </div>
+
+        <label style="display:block;margin-top:16px">About you
+            <textarea name="bio" maxlength="500" rows="3" placeholder="A short introduction">{{ current_user.bio or '' }}</textarea>
+        </label>
+
+        <label style="display:block;margin-top:16px">Profile photo
+            <input type="file" name="profile_photo" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
+            <small>JPG, PNG or WebP. Maximum file size: 3 MB.</small>
+        </label>
+
+        <hr style="margin:26px 0;border:0;border-top:1px solid var(--line,#e5e7eb)">
+
+        <h3>Change password</h3>
+        <p>Leave these fields empty if you do not want to change your password.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:16px">
+            <label>Current password
+                <input type="password" name="current_password" autocomplete="current-password">
+            </label>
+            <label>New password
+                <input type="password" name="new_password" minlength="8" autocomplete="new-password">
+            </label>
+            <label>Confirm new password
+                <input type="password" name="confirm_password" minlength="8" autocomplete="new-password">
+            </label>
+        </div>
+
+        <button type="submit" class="lime-btn" style="margin-top:22px">Save profile changes</button>
+    </form>
+</section>
+{% endblock %}

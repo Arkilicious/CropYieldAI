@@ -1,4 +1,4 @@
-from datetime import datetime,timedelta
+﻿from datetime import datetime,timedelta
 import csv,io,json
 from flask import Blueprint,render_template,request,redirect,url_for,flash,jsonify,Response,send_file
 from flask_login import login_required,current_user
@@ -44,11 +44,6 @@ def analytics():
 @bp.route('/model-lab')
 @login_required
 def model_lab(): return render_template('model_lab.html',metrics=metrics())
-@bp.route('/profile',methods=['GET','POST'])
-@login_required
-def profile():
-    if request.method=='POST': current_user.name=request.form.get('name',current_user.name); db.session.commit(); flash('Profile updated.','success')
-    return render_template('profile.html')
 @bp.route('/export/csv')
 @login_required
 def export_csv():
@@ -64,7 +59,7 @@ def report(pid):
     c.setFont('Helvetica-Bold',20); c.drawString(48,y,'CropYield AI'); y-=30; c.setFont('Helvetica',11); c.drawString(48,y,'AI Crop Yield Prediction Report'); y-=35
     for label,val in [('User',p.user.name),('Date',p.created_at.strftime('%Y-%m-%d %H:%M')),('Crop',p.crop_type),('Soil',p.soil_type),('Rainfall',f'{p.rainfall:.0f} mm'),('Temperature',f'{p.temperature:.1f} C'),('Humidity',f'{p.humidity:.0f}%'),('Predicted yield',f'{p.yield_tph:.2f} t/ha'),('Expected range',f'{p.range_low:.2f} - {p.range_high:.2f} t/ha'),('Risk',f'{p.risk_label} ({p.risk_score}/100)'),('Condition score',f'{p.condition_score}/100')]: c.drawString(55,y,f'{label}: {val}'); y-=22
     y-=10; c.setFont('Helvetica-Bold',12); c.drawString(55,y,'Decision support recommendations'); y-=20; c.setFont('Helvetica',10)
-    for rec in p.recommendations.split('|'): c.drawString(65,y,'• '+rec); y-=17
+    for rec in p.recommendations.split('|'): c.drawString(65,y,'â€¢ '+rec); y-=17
     y-=20; c.setFont('Helvetica-Oblique',8); c.drawString(55,y,'Prototype decision-support output. Model quality depends on training data quality and coverage.')
     c.save(); buf.seek(0); return send_file(buf,as_attachment=True,download_name=f'prediction-{pid}.pdf',mimetype='application/pdf')
 
@@ -169,3 +164,4 @@ def api_analytics():
         humidity=[p.humidity for p in rows],
         crop_counts=crop_counts
     )
+

@@ -1,4 +1,4 @@
-import os
+﻿import os
 
 from flask import Flask
 from flask_login import LoginManager
@@ -41,7 +41,8 @@ def create_app():
             "dev-secret-change-me"
         ),
         SQLALCHEMY_DATABASE_URI=database_url,
-        SQLALCHEMY_TRACK_MODIFICATIONS=False
+        SQLALCHEMY_TRACK_MODIFICATIONS=False,
+        MAX_CONTENT_LENGTH=3 * 1024 * 1024 + 256 * 1024,
     )
 
     # Initialize database
@@ -61,13 +62,16 @@ def create_app():
     # Register blueprints
     from .auth import bp as auth_bp
     from .main import bp as main_bp
+    from .accounts import bp as accounts_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(main_bp)
+    app.register_blueprint(accounts_bp)
 
     # Create database tables and seed default users
     with app.app_context():
         db.create_all()
+        upgrade_user_profile_columns()
         seed()
 
     return app
@@ -108,3 +112,26 @@ def seed():
         )
 
     db.session.commit()
+
+def upgrade_user_profile_columns():
+    """Add profile fields to existing SQLite/PostgreSQL user tables."""
+    from sqlalchemy import inspect, text
+
+    inspector = inspect(db.engine)
+    if "user" not in inspector.get_table_names():
+        return
+
+    existing = {column["name"] for column in inspector.get_columns("user")}
+    additions = {
+        "phone": "VARCHAR(40)",
+        "location": "VARCHAR(160)",
+        "bio": "VARCHAR(500)",
+        "profile_photo": "VARCHAR(255)"
+    }
+
+    with db.engine.begin() as connection:
+        for column, sql_type in additions.items():
+            if column not in existing:
+                connection.execute(
+                    text(f'ALTER TABLE "user" ADD COLUMN "{column}" {sql_type}')
+                )

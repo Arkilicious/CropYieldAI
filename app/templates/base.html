@@ -164,7 +164,7 @@
         <div class="sidebar-bottom">
 
             <!-- Profile -->
-            <a href="{{ url_for('main.profile') }}" class="nav-item">
+            <a href="{{ url_for('accounts.profile') }}" class="nav-item">
                 <span class="nav-icon">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
                         <circle cx="12" cy="8" r="4"></circle>
@@ -267,17 +267,31 @@
                 {% if current_user.is_authenticated %}
 
                 <a
-                    href="{{ url_for('main.profile') }}"
+                    href="{{ url_for('accounts.profile') }}"
                     class="user-menu"
                     aria-label="Open profile"
                 >
 
+                    {% if current_user.profile_photo %}
+                    <span class="user-avatar">
+                        <img src="{{ url_for('static', filename=current_user.profile_photo) }}"
+                             alt="{{ current_user.name }} profile photo">
+                    </span>
+                    {% else %}
                     <span class="user-avatar">
                         {{ current_user.name[0]|upper }}
                     </span>
+                    {% endif %}
 
                     <span class="user-name">
                         {{ current_user.name }}
+                    </span>
+
+                    <span class="profile-menu-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="8" r="4"></circle>
+                            <path d="M4 21c.8-4 3.5-6 8-6s7.2 2 8 6"></path>
+                        </svg>
                     </span>
 
                 </a>
@@ -327,40 +341,60 @@
      ========================================================= -->
 
 <script>
+(function () {
+    function initMobileMenu() {
+        const button = document.getElementById("mobileMenuButton");
+        const sidebar = document.getElementById("sidebar");
+        const mobile = window.matchMedia("(max-width: 720px)");
 
-document.addEventListener("DOMContentLoaded", function () {
+        if (!button || !sidebar) {
+            console.error("CropYield AI: menu elements not found.");
+            return;
+        }
 
-    const mobileButton =
-        document.getElementById("mobileMenuButton");
+        function setOpen(open) {
+            sidebar.classList.toggle("mobile-expanded", open);
+            sidebar.classList.toggle("mobile-collapsed", !open);
+            button.setAttribute("aria-expanded", String(open));
+            button.setAttribute(
+                "aria-label",
+                open ? "Close navigation" : "Open navigation"
+            );
+        }
 
-    const sidebar =
-        document.getElementById("sidebar");
+        button.addEventListener("click", function (event) {
+            event.preventDefault();
+            if (!mobile.matches) return;
 
-
-    if (mobileButton && sidebar) {
-
-        mobileButton.addEventListener("click", function () {
-            sidebar.classList.toggle("open");
+            const open = !sidebar.classList.contains("mobile-expanded");
+            setOpen(open);
+            console.log("CropYield AI menu:", open ? "opened" : "closed");
         });
 
+        function syncMenu() {
+            if (mobile.matches) {
+                setOpen(false);
+            } else {
+                sidebar.classList.remove("mobile-expanded", "mobile-collapsed");
+                button.setAttribute("aria-expanded", "true");
+            }
+        }
+
+        if (mobile.addEventListener) {
+            mobile.addEventListener("change", syncMenu);
+        } else {
+            mobile.addListener(syncMenu);
+        }
+
+        syncMenu();
     }
 
-
-    document.querySelectorAll(".sidebar .nav-item")
-        .forEach(function (link) {
-
-            link.addEventListener("click", function () {
-
-                if (window.innerWidth <= 720 && sidebar) {
-                    sidebar.classList.remove("open");
-                }
-
-            });
-
-        });
-
-});
-
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initMobileMenu);
+    } else {
+        initMobileMenu();
+    }
+})();
 </script>
 
 
@@ -368,3 +402,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </body>
 </html>
+
+
+
+
+

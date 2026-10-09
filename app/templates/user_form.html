@@ -1,0 +1,78 @@
+﻿{% extends 'base.html' %}
+{% block title %}{{ 'Create User' if creating else 'Edit User' }} | CropYield AI{% endblock %}
+{% block crumb %}User Management{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <div>
+        <div class="eyebrow">ADMINISTRATION / USER MANAGEMENT</div>
+        <h1>{{ 'Create account.' if creating else 'Edit account.' }}</h1>
+        <p>{{ 'Create a new CropYield AI account.' if creating else 'Update account details, permissions, and status.' }}</p>
+    </div>
+    <a class="glass-btn" href="{{ url_for('main.admin', _anchor='users') }}">Back to users</a>
+</div>
+
+<section class="panel" style="padding:24px;max-width:900px">
+    {% if user and user.profile_photo %}
+        <div style="margin-bottom:20px">
+            <img src="{{ url_for('static', filename=user.profile_photo) }}"
+                 alt="Current profile photo"
+                 style="width:84px;height:84px;object-fit:cover;border-radius:50%">
+        </div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:16px">
+            <label>Full name
+                <input name="name" maxlength="120" value="{{ user.name if user else '' }}" required>
+            </label>
+            <label>Email address
+                <input name="email" type="email" maxlength="160" value="{{ user.email if user else '' }}" required>
+            </label>
+            <label>Phone number
+                <input name="phone" type="tel" maxlength="40" value="{{ user.phone or '' if user else '' }}">
+            </label>
+            <label>Location
+                <input name="location" maxlength="160" value="{{ user.location or '' if user else '' }}">
+            </label>
+        </div>
+
+        <label style="display:block;margin-top:16px">About
+            <textarea name="bio" maxlength="500" rows="3">{{ user.bio or '' if user else '' }}</textarea>
+        </label>
+
+        <label style="display:block;margin-top:16px">Profile photo
+            <input type="file" name="profile_photo" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
+            <small>JPG, PNG or WebP. Maximum file size: 3 MB.</small>
+        </label>
+
+        <hr style="margin:24px 0;border:0;border-top:1px solid var(--line,#e5e7eb)">
+
+        <label style="display:block">Role
+            <select name="role" required>
+                <option value="user" {% if not user or user.role == 'user' %}selected{% endif %}>User / Farmer</option>
+                <option value="admin" {% if user and user.role == 'admin' %}selected{% endif %}>Administrator</option>
+            </select>
+        </label>
+
+        <label style="display:flex;align-items:center;gap:10px;margin-top:16px">
+            <input type="checkbox" name="active" {% if creating or (user and user.active) %}checked{% endif %}>
+            Account active
+        </label>
+
+        <label style="display:block;margin-top:16px">
+            {{ 'Initial password' if creating else 'Reset password (optional)' }}
+            <input type="password" name="password" minlength="8"
+                   {% if creating %}required{% endif %}
+                   autocomplete="new-password"
+                   placeholder="{{ 'At least 8 characters' if creating else 'Leave blank to keep current password' }}">
+        </label>
+
+        <button type="submit" class="lime-btn" style="margin-top:22px">
+            {{ 'Create account' if creating else 'Save account changes' }}
+        </button>
+    </form>
+</section>
+{% endblock %}
