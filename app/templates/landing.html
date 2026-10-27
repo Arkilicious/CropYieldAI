@@ -2017,9 +2017,76 @@
          HERO
          ===================================================== -->
 
-    <section class="hero" style="background-image:url('/static/images/hero.jpg') !important;background-size:cover !important;background-position:center !important;background-repeat:no-repeat !important;min-height:720px !important;">
+    
+<style id="hero-tagline-readability">
+    html[data-theme="light"] .hero .hero-description {
+        color: #FFFFFF !important;
+        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.95) !important;
+        font-weight: 700 !important;
+        opacity: 1 !important;
+    }
 
-        <img class="hero-video" src="{{ url_for('static', filename='images/hero.jpg') }}" alt="CropYield AI agricultural field">
+    html[data-theme="dark"] .hero .hero-description {
+        color: #F8FAFC !important;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.95) !important;
+        font-weight: 500 !important;
+    }
+</style>
+<style id="hero-light-cta-text-contrast">
+    /* Target only elements appearing after the hero action buttons */
+    html[data-theme="light"] .hero .hero-actions ~ * {
+        background: transparent !important;
+        background-color: transparent !important;
+        color: #FFFFFF !important;
+        font-weight: 700 !important;
+        text-shadow: 0 2px 5px rgba(0, 0, 0, 1) !important;
+        opacity: 1 !important;
+        box-shadow: none !important;
+        border-color: transparent !important;
+    }
+
+    html[data-theme="light"] .hero .hero-actions ~ * * {
+        background-color: transparent !important;
+        color: #FFFFFF !important;
+        font-weight: 700 !important;
+        text-shadow: 0 2px 5px rgba(0, 0, 0, 1) !important;
+        opacity: 1 !important;
+    }
+</style>
+<section class="hero" style="min-height:720px !important;">
+
+        <img class="hero-video" src="{{ url_for('static', filename='images/hero-dark.jpg') }}" alt="CropYield AI agricultural field">
+
+        <script>
+        (() => {
+            const hero = document.currentScript.closest(".hero");
+            if (!hero) return;
+
+            const heroImage = hero.querySelector(".hero-video");
+
+            function applyHeroTheme() {
+                const theme = document.documentElement.getAttribute("data-theme") || "dark";
+                const filename = theme === "light" ? "hero-light.jpg" : "hero-dark.jpg";
+                const imageUrl = "{{ url_for('static', filename='images/hero-dark.jpg') }}".replace("hero-dark.jpg", filename);
+
+                hero.style.setProperty("background-image", `url("${imageUrl}")`, "important");
+                hero.style.setProperty("background-size", "cover", "important");
+                hero.style.setProperty("background-position", "center", "important");
+                hero.style.setProperty("background-repeat", "no-repeat", "important");
+
+                if (heroImage && !heroImage.src.endsWith(filename)) {
+                    heroImage.src = imageUrl;
+                }
+            }
+
+            applyHeroTheme();
+
+            new MutationObserver(applyHeroTheme).observe(
+                document.documentElement,
+                { attributes: true, attributeFilter: ["data-theme"] }
+            );
+        })();
+        </script>
 
 
         <div class="hero-theme-overlay"></div>
@@ -2846,6 +2913,11 @@
 </body>
 
 </html>
+
+
+
+
+
 
 
 
