@@ -67,7 +67,7 @@ Dark theme remains the default.
 width: 38px;
 height: 38px;
 border: 1px solid var(--line);
-background: #ffffff08;
+background: #ffee0008;
 color: var(--text);
 display: grid;
 place-items: center;
@@ -102,7 +102,7 @@ LIGHT THEME
 
 html[data-theme="light"] {
 --bg: #f5f7f5;
---panel: #ffffff;
+--panel: #fff307;
 --panel2: #ffffff;
 --line: #12201818;
 --text: #17231c;
@@ -182,7 +182,7 @@ border-bottom-color: rgba(18, 32, 24, .09);
 }
 
 html[data-theme="light"] .crumb {
-color: #738078;
+color: #ddff00;
 }
 
 html[data-theme="light"] .live-pill {
@@ -3311,7 +3311,7 @@ html.theme-light .hero .hero-content h1 {
 
 html[data-theme="light"] .hero .hero-content h1 span,
 html.theme-light .hero .hero-content h1 span {
-    color: #FFC107 !important;
+    color: #ffffff !important;
 }
 
 html[data-theme="light"] .hero .hero-content .hero-description,
@@ -3750,3 +3750,233 @@ html[data-theme="light"] .hero .hero-content .eyebrow {
         height: 18px;
     }
 }
+/* =========================================================
+   CROPYIELD AI - FINAL HERO CONTRAST AND BACKGROUND FIX
+   Keeps the background sharp and improves text readability.
+   ========================================================= */
+
+.hero {
+    position: relative !important;
+    isolation: isolate !important;
+    overflow: hidden !important;
+
+    background-color: #06140e !important;
+    background-image:
+        linear-gradient(
+            90deg,
+            rgba(2, 12, 7, 0.48) 0%,
+            rgba(2, 12, 7, 0.34) 55%,
+            rgba(2, 12, 7, 0.24) 100%
+        ),
+        linear-gradient(
+            0deg,
+            rgba(2, 12, 7, 0.24) 0%,
+            transparent 65%
+        ),
+        url("/static/images/hero.jpg") !important;
+
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+}
+
+/* Remove the extra blurred background layer */
+.hero::before {
+    content: none !important;
+    display: none !important;
+}
+
+/* Prevent older overlay layers from darkening or washing out the image */
+.hero > .hero-overlay,
+.hero > .hero-theme-overlay {
+    display: none !important;
+}
+
+/* Keep the existing hero content above the background */
+.hero > .landing-container,
+.hero .hero-content,
+.hero .hero-grid,
+.hero nav,
+.hero header {
+    position: relative !important;
+    z-index: 5 !important;
+}
+
+/* Main headline: clean white */
+.hero h1,
+.hero .hero-content h1 {
+    color: #f0099f !important;
+    text-shadow: 0 3px 14px rgba(0, 0, 0, 0.65) !important;
+}
+
+/* Golden-yellow headline accents */
+.hero h1 span,
+.hero h1 em,
+.hero h1 strong,
+.hero .hero-content h1 span,
+.hero .hero-content h1 em {
+    color: #ffd166 !important;
+}
+
+/* Supporting text */
+.hero p,
+.hero .hero-description,
+.hero .hero-subtitle {
+    color: #f4f7f2 !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Small hero labels and statistics */
+.hero .eyebrow,
+.hero .hero-metrics strong,
+.hero .hero-metrics span {
+    color: #ffe09a !important;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.65) !important;
+}
+
+/* Navigation links remain readable over the image */
+.hero nav a,
+.hero header a {
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+}
+
+/* Use the same readable hero palette in light and dark themes */
+html[data-theme="light"] .hero,
+html.theme-light .hero,
+html[data-theme="dark"] .hero,
+html.theme-dark .hero {
+    color: #ffffff !important;
+}
+
+html[data-theme="light"] .hero h1,
+html.theme-light .hero h1,
+html[data-theme="dark"] .hero h1,
+html.theme-dark .hero h1 {
+    color: #ffffff !important;
+}
+
+html[data-theme="light"] .hero h1 span,
+html[data-theme="light"] .hero h1 em,
+html.theme-light .hero h1 span,
+html.theme-light .hero h1 em,
+html[data-theme="dark"] .hero h1 span,
+html[data-theme="dark"] .hero h1 em,
+html.theme-dark .hero h1 span,
+html.theme-dark .hero h1 em {
+    color: #ffd166 !important;
+}
+
+
+/* LIGHT THEME: HERO TEXT CONTRAST FIX */
+html[data-theme="light"] .hero .hero-content h1,
+html[data-theme="light"] .hero .hero-content h1 *,
+html[data-theme="light"] .hero .hero-content p,
+html[data-theme="light"] .hero .hero-content li,
+html[data-theme="light"] .hero .hero-content .hero-subtitle {
+    color: #ffffff !important;
+}
+
+html[data-theme="light"] .hero .hero-content h1 span,
+html[data-theme="light"] .hero .hero-content h1 strong,
+html[data-theme="light"] .hero .hero-content h1 em,
+html[data-theme="light"] .hero .hero-content .accent {
+    color: #ffd166 !important;
+}
+
+html[data-theme="light"] .hero .hero-content .hero-btn,
+html[data-theme="light"] .hero .hero-content a.btn {
+    color: #ffffff !important;
+}
+
+/* ==================================================
+   CROPYIELD AI - FINAL HERO CONTRAST OVERRIDE
+   Consistent readable text in light and dark themes
+   ================================================== */
+
+html[data-theme="light"] .hero,
+html.theme-light .hero {
+    color: #ffffff !important;
+}
+
+html[data-theme="light"] .hero .hero-content h1,
+html.theme-light .hero .hero-content h1,
+html[data-theme="light"] .hero .hero-content h1 *,
+html.theme-light .hero .hero-content h1 * {
+    color: #ffffff !important;
+    text-shadow: 0 3px 14px rgba(0, 0, 0, .85) !important;
+}
+
+html[data-theme="light"] .hero .hero-content h1 span,
+html[data-theme="light"] .hero .hero-content h1 em,
+html[data-theme="light"] .hero .hero-content h1 strong,
+html.theme-light .hero .hero-content h1 span,
+html.theme-light .hero .hero-content h1 em,
+html.theme-light .hero .hero-content h1 strong {
+    color: #ffd166 !important;
+}
+
+html[data-theme="light"] .hero .hero-content p,
+html[data-theme="light"] .hero .hero-content .hero-description,
+html[data-theme="light"] .hero .hero-content .hero-subtitle,
+html.theme-light .hero .hero-content p,
+html.theme-light .hero .hero-content .hero-description,
+html.theme-light .hero .hero-content .hero-subtitle {
+    color: #fff8e6 !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, .85) !important;
+}
+
+html[data-theme="light"] .hero .hero-content .eyebrow,
+html.theme-light .hero .hero-content .eyebrow {
+    color: #ffd166 !important;
+}
+
+html[data-theme="light"] .hero .hero-content .hero-metrics strong,
+html.theme-light .hero .hero-content .hero-metrics strong {
+    color: #ffd166 !important;
+}
+
+html[data-theme="light"] .hero .hero-content .hero-metrics span,
+html.theme-light .hero .hero-content .hero-metrics span {
+    color: #ffffff !important;
+}
+
+
+/* CROPYIELD AI: TARGETED LIGHT-THEME HERO TEXT FIX */
+
+html[data-theme="light"] .hero .hero-content,
+html.theme-light .hero .hero-content {
+    color: #ffffff !important;
+}
+
+html[data-theme="light"] .hero .hero-content .eyebrow,
+html.theme-light .hero .hero-content .eyebrow {
+    color: #ffe08a !important;
+}
+
+html[data-theme="light"] .hero .hero-content h1,
+html.theme-light .hero .hero-content h1 {
+    color: #ffffff !important;
+    text-shadow: 0 3px 12px rgba(0, 0, 0, 0.9) !important;
+}
+
+html[data-theme="light"] .hero .hero-content h1 span,
+html.theme-light .hero .hero-content h1 span {
+    color: #ffd166 !important;
+}
+
+html[data-theme="light"] .hero .hero-content .hero-description,
+html.theme-light .hero .hero-content .hero-description {
+    color: #ffffff !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9) !important;
+}
+
+html[data-theme="light"] .hero .hero-content .hero-metrics strong,
+html.theme-light .hero .hero-content .hero-metrics strong {
+    color: #ffd166 !important;
+}
+
+html[data-theme="light"] .hero .hero-content .hero-metrics span,
+html.theme-light .hero .hero-content .hero-metrics span {
+    color: #ffffff !important;
+}
+
